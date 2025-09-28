@@ -1,88 +1,52 @@
-<!DOCTYPE html>
-<html lang="bg">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Открий Перфектния Чифт | Начална Страница</title>
+{% extends "base.html" %}
 
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        'accent': '#3B82F6',
-                        'accent-dark': '#2563EB',
-                    },
-                    fontFamily: {
-                        sans: ['Inter', 'sans-serif'],
-                    },
-                }
-            }
-        }
-    </script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
-</head>
-<body class="bg-gray-50 font-sans min-h-screen flex items-center justify-center p-4">
+{% block title %}Открий Перфектния Чифт | Начална Страница{% endblock %}
 
-    <div class="max-w-6xl w-full bg-white shadow-2xl rounded-xl overflow-hidden md:flex md:h-[600px] border border-gray-100">
+{% block content %}
+<div class="max-w-6xl w-full bg-white shadow-2xl rounded-xl overflow-hidden md:flex md:h-[650px] border border-gray-100 mx-auto mt-12">
 
-        <div class="md:w-1/2 p-8 sm:p-12 flex flex-col justify-center text-center md:text-left">
+    <!-- Лявата част с текст -->
+    <div class="md:w-1/2 p-10 sm:p-16 flex flex-col justify-center text-center md:text-left bg-gradient-to-r from-white via-gray-50 to-white">
+        <span class="text-sm font-semibold text-accent uppercase tracking-wider mb-3">Нови Колекции 2024</span>
 
-            <span class="text-sm font-semibold text-accent uppercase tracking-wider mb-2">Нови Колекции 2024</span>
+        <h1 class="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-gray-900 leading-tight mb-5">
+            Открий <span class="text-accent">Перфектния</span> Чифт
+        </h1>
 
-            <h1 class="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-gray-900 leading-tight mb-4">
-                Открий <span class="text-accent">Перфектния</span> Чифт
-            </h1>
+        <p class="text-lg text-gray-700 mb-10 sm:mb-12">
+            Елегантност и Комфорт във Всяка Стъпка. Разгледай най-новите модели маратонки, кецове и официални обувки.
+        </p>
 
-            <p class="text-lg text-gray-600 mb-8 sm:mb-10">
-                Елегантност и Комфорт във Всяка Стъпка. Разгледай най-новите модели маратонки, кецове и официални обувки.
-            </p>
+        {% if current_user.is_authenticated %}
+            <a href="{{ url_for('dashboard_bp.dashboard') }}"
+               class="inline-block bg-accent text-white px-8 py-3 rounded-lg font-semibold text-lg shadow-lg
+                      hover:bg-accent-dark hover:scale-105 transition transform duration-300 ease-in-out">
+               Отиди към твоя Dashboard
+            </a>
+        {% else %}
+            <a href="{{ url_for('auth.register') }}"
+               class="inline-block bg-accent text-white px-8 py-3 rounded-lg font-semibold text-lg shadow-lg
+                      hover:bg-accent-dark hover:scale-105 transition transform duration-300 ease-in-out">
+               Започнете сега
+            </a>
+        {% endif %}
 
-
-    <a href="{{ url_for('auth.register') }}" class="cta-btn">Започнете сега</a>
-            <p class="mt-6 text-xs text-gray-400">
-                Кликни върху бутона, за да разгледаш пълния ни каталог.
-            </p>
-        </div>
-
-        <div class="md:w-1/2 bg-gray-100 flex items-center justify-center p-4 md:p-8">
-            <img src="/static/images/home_page_shoes.jpg"
-                 alt="Снимка на стилни маратонки с минималистичен дизайн"
-                 class="w-full h-full object-cover rounded-lg shadow-xl"
-                 onerror="this.onerror=null;this.src='https://placehold.co/1000x800/1F2937/FFFFFF?text=Зареждане+на+снимка+неуспешно'">
-        </div>
-
+        <p class="mt-6 text-sm text-gray-500">
+            Кликни върху бутона, за да разгледаш пълния ни каталог.
+        </p>
     </div>
-    <script>
-        function alert(message) {
-            const container = document.body;
-            let modal = document.getElementById('custom-alert-modal');
 
-            if (!modal) {
-                modal = document.createElement('div');
-                modal.id = 'custom-alert-modal';
-                modal.className = 'fixed inset-0 bg-gray-900 bg-opacity-75 flex items-center justify-center z-50 transition-opacity duration-300 opacity-0 pointer-events-none';
-                modal.innerHTML = `
-                    <div class="bg-white p-6 rounded-lg shadow-2xl max-w-sm w-full transform scale-95 transition-transform duration-300">
-                        <p id="alert-message" class="text-gray-800 text-lg font-semibold mb-4"></p>
-                        <button id="close-alert" class="w-full bg-accent text-white py-2 rounded-md hover:bg-accent-dark transition">Разбрано</button>
-                    </div>
-                `;
-                container.appendChild(modal);
+    <!-- Дясната част с изображение -->
+    <div class="md:w-1/2 bg-gray-50 flex items-center justify-center p-6 md:p-12">
+        <img src="{{ url_for('static', filename='images/home_page_shoes.jpg') }}"
+             alt="Снимка на стилни маратонки с минималистичен дизайн"
+             class="w-full h-full object-cover rounded-xl shadow-2xl transform hover:scale-105 transition duration-500 ease-in-out"
+             onerror="this.onerror=null;this.src='https://placehold.co/1000x800/1F2937/FFFFFF?text=Снимка+неуспешна'">
+    </div>
 
-                document.getElementById('close-alert').addEventListener('click', () => {
-                    modal.classList.remove('opacity-100', 'pointer-events-auto');
-                    modal.querySelector('div').classList.remove('scale-100');
-                });
-            }
+</div>
 
-            document.getElementById('alert-message').textContent = message;
-            setTimeout(() => {
-                modal.classList.add('opacity-100', 'pointer-events-auto');
-                modal.querySelector('div').classList.add('scale-100');
-            }, 50);
-        }
-    </script>
-</body>
-</html>
+<!-- Допълнителни декорации -->
+<div class="absolute top-0 left-0 w-32 h-32 bg-accent opacity-20 rounded-full -translate-x-1/2 -translate-y-1/2 pointer-events-none"></div>
+<div class="absolute bottom-0 right-0 w-48 h-48 bg-accent-dark opacity-15 rounded-full translate-x-1/3 translate-y-1/3 pointer-events-none"></div>
+{% endblock %}

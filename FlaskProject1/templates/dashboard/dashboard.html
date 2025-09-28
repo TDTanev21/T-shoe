@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+
+{% block title %}Твоят Dashboard{% endblock %}
+
+{% block content %}
+<h1 class="mb-4">Добре дошъл, {{ current_user.username }}!</h1>
+
+<p>Тук можеш да разглеждаш каталога с продукти и да управляваш своите данни.</p>
+
+<hr>
+
+<h2 class="mt-4">Каталог с продукти</h2>
+<div class="row row-cols-1 row-cols-md-3 g-4 mt-2">
+    <!-- Example product cards -->
+    <div class="col">
+        <div class="card h-100">
+            <img src="{{ url_for('static', filename='images/product1.jpg') }}" class="card-img-top" alt="Продукт 1">
+            <div class="card-body">
+                <h5 class="card-title">Продукт 1</h5>
+                <p class="card-text">Описание на продукта. Страхотен избор!</p>
+            </div>
+        </div>
+    </div>
+    <div class="col">
+        <div class="card h-100">
+            <img src="{{ url_for('static', filename='images/product2.jpg') }}" class="card-img-top" alt="Продукт 2">
+            <div class="card-body">
+                <h5 class="card-title">Продукт 2</h5>
+                <p class="card-text">Описание на продукта. Много полезен и красив.</p>
+            </div>
+        </div>
+    </div>
+    <div class="col">
+        <div class="card h-100">
+            <img src="{{ url_for('static', filename='images/product3.jpg') }}" class="card-img-top" alt="Продукт 3">
+            <div class="card-body">
+                <h5 class="card-title">Продукт 3</h5>
+                <p class="card-text">Описание на продукта. Отличен за всеки ден.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
