@@ -30,7 +30,7 @@
                 <label for="confirm_password">Repeat Password</label> <!-- Added field for repeat password -->
                 <input type="password" id="confirm_password" name="confirm_password" required>
             </div>
-            <p class="text-muted mt-3">Already have an account? <a href="" class="text-primary">Log in</a></p>
+            <p class="text-muted mt-3">Already have an account? <a href="{{ url_for('auth.login') }}" class="text-primary">Log in</a></p>
 
             <button type="submit">Register</button>
         </form>
