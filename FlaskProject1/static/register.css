@@ -1,0 +1,98 @@
+body {
+    font-family: 'Inter', sans-serif;
+    background: linear-gradient(135deg, #0a0a0f, #1f1f29, #0d0d13);
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0;
+    color: #fff;
+}
+
+.register-container {
+    background-color: #1f1f29;
+    padding: 30px 25px;
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0, 255, 255, 0.2);
+    width: 350px;
+    text-align: center;
+    position: relative;
+}
+
+.register-container h2 {
+    color: #00ffff;
+    margin-bottom: 25px;
+    font-weight: 700;
+}
+
+.input-group {
+    position: relative;
+    margin-bottom: 20px;
+}
+
+.input-group-text {
+    background-color: #2b2b38;
+    border: 1px solid #444;
+    color: #ccc;
+}
+
+.form-control {
+    background-color: #0d0d13;
+    border: 1px solid #444;
+    color: #fff;
+    padding-right: 40px;
+}
+
+.form-control::placeholder {
+    color: #bbb;
+    opacity: 1;
+}
+
+.form-control:focus {
+    background-color: #0d0d13;
+    color: #fff;
+    border-color: #00ffff;
+    box-shadow: 0 0 5px #00ffff;
+}
+
+.btn-register {
+    width: 100%;
+    padding: 12px;
+    background-color: #00ffff;
+    color: #0a0a0f;
+    font-weight: bold;
+    border-radius: 30px;
+    font-size: 1.1rem;
+    transition: all 0.4s ease;
+    box-shadow: 0 6px 15px rgba(0, 255, 255, 0.3);
+}
+
+.btn-register:hover {
+    background-color: #0a0a0f;
+    color: #00ffff;
+    transform: scale(1.05);
+}
+
+.text-muted {
+    color: #aaa !important;
+    text-align: center;
+}
+
+.text-muted a {
+    color: #00ffff !important;
+    text-decoration: none;
+}
+
+.text-muted a:hover {
+    text-decoration: underline;
+}
+
+.password-toggle {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+    color: #ccc;
+    font-size: 1.1rem;
+}
