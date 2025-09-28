@@ -3,7 +3,7 @@ app = Flask(__name__)
 
 
 
-from .main import main_bp
+from main import main_bp
 
 app.register_blueprint(main_bp)
 
