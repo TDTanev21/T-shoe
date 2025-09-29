@@ -74,7 +74,6 @@ def admin():
         return redirect(url_for('dashboard.dashboard'))
 
     users_count = len(accounts)
-    products_count = len(admin_products)
     orders_count = len(orders)
 
     total_revenue = sum(order.get('total', 0) for order in orders)
@@ -84,12 +83,11 @@ def admin():
         'dashboard/admin.html',
         current_user=current_user,
         users_count=users_count,
-        products_count=products_count,
         orders_count=orders_count,
         total_revenue=total_revenue,
         users=accounts,
         orders=orders,
-        products=admin_products
+
     )
 
 
@@ -111,7 +109,7 @@ def add_product():
         'stock': int(stock)
     }
 
-    admin_products.append(new_product)
+
 
     flash(f'Продукт "{name}" е добавен успешно!', 'success')
     return redirect(url_for('dashboard.admin'))
@@ -162,10 +160,5 @@ def delete_product(product_id):
         flash('Нямате права за тази операция.', 'error')
         return redirect(url_for('dashboard.dashboard'))
 
-    if 0 < product_id <= len(admin_products):
-        deleted_product = admin_products.pop(product_id - 1)
-        flash(f'Продукт "{deleted_product["name"]}" е изтрит успешно!', 'success')
-    else:
-        flash('Продуктът не е намерен.', 'error')
 
     return redirect(url_for('dashboard.admin'))

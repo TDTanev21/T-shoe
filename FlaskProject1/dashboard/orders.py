@@ -17,4 +17,4 @@ orders = [
 cart = []
 
 # Добави този речник за колички на потребителите
-user_carts = {}  # {username: [product_ids]}
+user_carts = {}
