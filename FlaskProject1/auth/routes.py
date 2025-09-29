@@ -26,6 +26,7 @@ def register():
             print(f"Всички потребители: {accounts}")
 
             flash('Регистрацията е успешна! Моля, влезте в системата.', 'success')
+            print("Регистрацията е успешна! Моля, влезте в системата.")
             return redirect(url_for('auth.login'))
 
     except Exception as e:

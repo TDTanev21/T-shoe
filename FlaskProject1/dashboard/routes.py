@@ -126,26 +126,28 @@ def delete_order(order_id):
     return redirect(url_for('dashboard.admin'))
 
 
-#@dashboard_bp.route('/admin/delete_user/<username>')
-#def delete_user(username):
-#    if 'username' not in session or session['username'] != 'admin':
-#        flash('Нямате права за тази операция.', 'error')
-#        return redirect(url_for('dashboard.dashboard'))
-#
-#    if username == session['username']:
-#        flash('Не можете да изтриете собствения си акаунт!', 'error')
-#        return redirect(url_for('dashboard.admin'))
-#
-#    user_exists = any(user[0] == username for user in accounts)
-#
-#    if user_exists:
-#        global accounts
-#        accounts = [user for user in accounts if user[0] != username]
-#        flash(f'Потребител "{username}" е изтрит успешно!', 'success')
-#    else:
-#        flash('Потребителят не е намерен.', 'error')
-#
-#    return redirect(url_for('dashboard.admin'))
+@dashboard_bp.route('/admin/delete_user/<username>')
+def delete_user(username):
+    if 'username' not in session or session['username'] != 'admin':
+        flash('Нямате права за тази операция.', 'error')
+        return redirect(url_for('dashboard.dashboard'))
+
+    # Проверка дали не се опитва да изтрие себе си
+    if username == session['username']:
+        flash('Не можете да изтриете собствения си акаунт!', 'error')
+        return redirect(url_for('dashboard.admin'))
+
+    # Премахване на потребителя от списъка
+    global accounts
+    original_length = len(accounts)
+    accounts = [user for user in accounts if user[0] != username]
+
+    if len(accounts) < original_length:
+        flash(f'Потребител "{username}" е изтрит успешно!', 'success')
+    else:
+        flash('Потребителят не е намерен.', 'error')
+
+    return redirect(url_for('dashboard.admin'))
 @dashboard_bp.route('/remove_from_cart', methods=['POST'])
 def remove_from_cart():
     if 'username' not in session:

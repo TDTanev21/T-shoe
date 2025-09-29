@@ -1,6 +1,7 @@
 accounts = [
     ('t', 't'),
     ('admin', 'admin'),
+    ('TDTanev21','tedoeqk'),
 ]
 
 class User:
