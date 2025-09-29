@@ -14,208 +14,221 @@
     <h2 class="catalog-title">Каталог с Обувки</h2>
 
     <div class="products-grid">
-        <!-- Спортни обувки -->
-        <div class="product-card">
-            <div class="product-image">
-                <img src="https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=400&h=300&fit=crop" alt="Nike Air Max">
-                <div class="product-overlay">
-                    <form action="{{ url_for('dashboard.add') }}" method="POST">
-                        <input type="hidden" name="product_id" value="nike_air_max">
-                        <button type="submit" class="add-to-cart-btn">
-                            <span>Добави в количката</span>
-                            <i class="cart-icon">🛒</i>
-                        </button>
-                    </form>
-                </div>
-            </div>
-            <div class="product-info">
-                <h3 class="product-name">Nike Air Max</h3>
-                <p class="product-category">Спортни</p>
-                <p class="product-description">Удобни спортни обувки за тренировки и всекидневие.</p>
-                <div class="product-price">189.99 лв</div>
+
+    <!-- Nike Air Force 1 -->
+    <div class="product-card">
+        <div class="product-image">
+            <img src="https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=400&h=300&fit=crop" alt="Nike Air Force 1">
+            <div class="product-overlay">
+                <form action="{{ url_for('dashboard.add_to_cart') }}" method="POST">
+                    <input type="hidden" name="product_id" value="nike_air_force">
+                    <button type="submit" class="add-to-cart-btn">
+                        <span>Добави в количката</span>
+                        <i class="cart-icon">🛒</i>
+                    </button>
+                </form>
             </div>
         </div>
-
-        <div class="product-card">
-            <div class="product-image">
-                <img src="https://images.unsplash.com/photo-1606107557195-0e29a4b5b4aa?w=400&h=300&fit=crop" alt="Adidas Ultraboost">
-                <div class="product-overlay">
-                    <form action="{{ url_for('dashboard.add') }}" method="POST">
-                        <input type="hidden" name="product_id" value="adidas_ultraboost">
-                        <button type="submit" class="add-to-cart-btn">
-                            <span>Добави в количката</span>
-                            <i class="cart-icon">🛒</i>
-                        </button>
-                    </form>
-                </div>
-            </div>
-            <div class="product-info">
-                <h3 class="product-name">Adidas Ultraboost</h3>
-                <p class="product-category">Спортни</p>
-                <p class="product-description">Технология Boost за максимален комфорт.</p>
-                <div class="product-price">229.99 лв</div>
-            </div>
-        </div>
-
-        <div class="product-card">
-            <div class="product-image">
-                <img src="https://images.unsplash.com/photo-1595950653106-6c9ebd614d3a?w=400&h=300&fit=crop" alt="Puma RS-X">
-                <div class="product-overlay">
-                    <form action="{{ url_for('dashboard.add') }}" method="POST">
-                        <input type="hidden" name="product_id" value="puma_rsx">
-                        <button type="submit" class="add-to-cart-btn">
-                            <span>Добави в количката</span>
-                            <i class="cart-icon">🛒</i>
-                        </button>
-                    </form>
-                </div>
-            </div>
-            <div class="product-info">
-                <h3 class="product-name">Puma RS-X</h3>
-                <p class="product-category">Спортни</p>
-                <p class="product-description">Модерен дизайн с ретро вдъхновение.</p>
-                <div class="product-price">159.99 лв</div>
-            </div>
-        </div>
-
-        <!-- Елегантни обувки -->
-        <div class="product-card">
-            <div class="product-image">
-                <img src="https://images.unsplash.com/photo-1525966222134-fcfa99b8ae77?w=400&h=300&fit=crop" alt="Елегантни обувки">
-                <div class="product-overlay">
-                    <form action="{{ url_for('dashboard.add') }}" method="POST">
-                        <input type="hidden" name="product_id" value="elegant_shoes_1">
-                        <button type="submit" class="add-to-cart-btn">
-                            <span>Добави в количката</span>
-                            <i class="cart-icon">🛒</i>
-                        </button>
-                    </form>
-                </div>
-            </div>
-            <div class="product-info">
-                <h3 class="product-name">Clarks Desert Boots</h3>
-                <p class="product-category">Елегантни</p>
-                <p class="product-description">Класически чизми за всеки сезон.</p>
-                <div class="product-price">279.99 лв</div>
-            </div>
-        </div>
-
-        <div class="product-card">
-            <div class="product-image">
-                <img src="https://images.unsplash.com/photo-1531315630201-bb15abeb1653?w=400&h=300&fit=crop" alt="Мокасини">
-                <div class="product-overlay">
-                    <form action="{{ url_for('dashboard.add') }}" method="POST">
-                        <input type="hidden" name="product_id" value="moccasins">
-                        <button type="submit" class="add-to-cart-btn">
-                            <span>Добави в количката</span>
-                            <i class="cart-icon">🛒</i>
-                        </button>
-                    </form>
-                </div>
-            </div>
-            <div class="product-info">
-                <h3 class="product-name">Geox Мокасини</h3>
-                <p class="product-category">Елегантни</p>
-                <p class="product-description">Дихтящи мокасини за офис и формални събития.</p>
-                <div class="product-price">199.99 лв</div>
-            </div>
-        </div>
-
-        <div class="product-card">
-            <div class="product-image">
-                <img src="https://images.unsplash.com/photo-1614252235316-8c857d38b5f4?w=400&h=300&fit=crop" alt="Оксфорди">
-                <div class="product-overlay">
-                    <form action="{{ url_for('dashboard.add') }}" method="POST">
-                        <input type="hidden" name="product_id" value="oxford_shoes">
-                        <button type="submit" class="add-to-cart-btn">
-                            <span>Добави в количката</span>
-                            <i class="cart-icon">🛒</i>
-                        </button>
-                    </form>
-                </div>
-            </div>
-            <div class="product-info">
-                <h3 class="product-name">Hugo Boss Оксфорди</h3>
-                <p class="product-category">Елегантни</p>
-                <p class="product-description">Премиум класа за бизнес срещи.</p>
-                <div class="product-price">399.99 лв</div>
-            </div>
-        </div>
-
-        <!-- Всекидневни обувки -->
-        <div class="product-card">
-            <div class="product-image">
-                <img src="https://images.unsplash.com/photo-1525966222134-fcfa99b8ae77?w=400&h=300&fit=crop" alt="Vans Old Skool">
-                <div class="product-overlay">
-                    <form action="{{ url_for('dashboard.add') }}" method="POST">
-                        <input type="hidden" name="product_id" value="vans_old_skool">
-                        <button type="submit" class="add-to-cart-btn">
-                            <span>Добави в количката</span>
-                            <i class="cart-icon">🛒</i>
-                        </button>
-                    </form>
-                </div>
-            </div>
-            <div class="product-info">
-                <h3 class="product-name">Vans Old Skool</h3>
-                <p class="product-category">Всекидневни</p>
-                <p class="product-description">Култови кецове за уличен стил.</p>
-                <div class="product-price">129.99 лв</div>
-            </div>
-        </div>
-
-        <div class="product-card">
-            <div class="product-image">
-                <img src="https://images.unsplash.com/photo-1549298916-b41d501d3772?w=400&h=300&fit=crop" alt="Converse">
-                <div class="product-overlay">
-                    <form action="{{ url_for('dashboard.add') }}" method="POST">
-                        <input type="hidden" name="product_id" value="converse_chuck">
-                        <button type="submit" class="add-to-cart-btn">
-                            <span>Добави в количката</span>
-                            <i class="cart-icon">🛒</i>
-                        </button>
-                    </form>
-                </div>
-            </div>
-            <div class="product-info">
-                <h3 class="product-name">Converse Chuck Taylor</h3>
-                <p class="product-category">Всекидневни</p>
-                <p class="product-description">Везни класика за неформален стил.</p>
-                <div class="product-price">119.99 лв</div>
-            </div>
-        </div>
-
-        <div class="product-card">
-            <div class="product-image">
-                <img src="https://images.unsplash.com/photo-1600185365483-26d7a4cc7519?w=400&h=300&fit=crop" alt="New Balance">
-                <div class="product-overlay">
-                    <form action="{{ url_for('dashboard.add') }}" method="POST">
-                        <input type="hidden" name="product_id" value="new_balance_574">
-                        <button type="submit" class="add-to-cart-btn">
-                            <span>Добави в количката</span>
-                            <i class="cart-icon">🛒</i>
-                        </button>
-                    </form>
-                </div>
-            </div>
-            <div class="product-info">
-                <h3 class="product-name">New Balance 574</h3>
-                <p class="product-category">Всекидневни</p>
-                <p class="product-description">Комфорт и стил за дълги разходки.</p>
-                <div class="product-price">169.99 лв</div>
-            </div>
+        <div class="product-info">
+            <h3 class="product-name">Nike Air Force 1</h3>
+            <p class="product-category">Спортни</p>
+            <p class="product-description">Класически бели кецове с култов статус.</p>
+            <div class="product-price">199.99 лв</div>
         </div>
     </div>
 
-    <div class="cart-section">
-        <a href="{{ url_for('dashboard.cart') }}" class="view-cart-btn">
-            <span>Преглед на количката</span>
-            <i class="cart-icon-large">🛒</i>
-        </a>
+    <!-- Air Jordan 1 -->
+    <div class="product-card">
+        <div class="product-image">
+            <img src="https://images.unsplash.com/photo-1600269452121-4f2416e55c28?w=400&h=300&fit=crop" alt="Air Jordan 1">
+            <div class="product-overlay">
+                <form action="{{ url_for('dashboard.add_to_cart') }}" method="POST">
+                    <input type="hidden" name="product_id" value="nike_jordan">
+                    <button type="submit" class="add-to-cart-btn">
+                        <span>Добави в количката</span>
+                        <i class="cart-icon">🛒</i>
+                    </button>
+                </form>
+            </div>
+        </div>
+        <div class="product-info">
+            <h3 class="product-name">Air Jordan 1</h3>
+            <p class="product-category">Спортни</p>
+            <p class="product-description">Легендарни баскетболни кецове.</p>
+            <div class="product-price">299.99 лв</div>
+        </div>
     </div>
+
+    <!-- Adidas Ultraboost -->
+    <div class="product-card">
+        <div class="product-image">
+            <img src="https://images.unsplash.com/photo-1606107557195-0e29a4b5b4aa?w=400&h=300&fit=crop" alt="Adidas Ultraboost">
+            <div class="product-overlay">
+                <form action="{{ url_for('dashboard.add_to_cart') }}" method="POST">
+                    <input type="hidden" name="product_id" value="adidas_ultraboost">
+                    <button type="submit" class="add-to-cart-btn">
+                        <span>Добави в количката</span>
+                        <i class="cart-icon">🛒</i>
+                    </button>
+                </form>
+            </div>
+        </div>
+        <div class="product-info">
+            <h3 class="product-name">Adidas Ultraboost</h3>
+            <p class="product-category">Спортни</p>
+            <p class="product-description">Технология Boost за максимален комфорт.</p>
+            <div class="product-price">229.99 лв</div>
+        </div>
+    </div>
+
+    <!-- Adidas Superstar -->
+    <div class="product-card">
+        <div class="product-image">
+            <img src="https://images.unsplash.com/photo-1587563871167-1ee9c731aefb?w=400&h=300&fit=crop" alt="Adidas Superstar">
+            <div class="product-overlay">
+                <form action="{{ url_for('dashboard.add_to_cart') }}" method="POST">
+                    <input type="hidden" name="product_id" value="adidas_superstar">
+                    <button type="submit" class="add-to-cart-btn">
+                        <span>Добави в количката</span>
+                        <i class="cart-icon">🛒</i>
+                    </button>
+                </form>
+            </div>
+        </div>
+        <div class="product-info">
+            <h3 class="product-name">Adidas Superstar</h3>
+            <p class="product-category">Всекидневни</p>
+            <p class="product-description">Иконични кецове с раковинков връх.</p>
+            <div class="product-price">179.99 лв</div>
+        </div>
+    </div>
+
+    <!-- Puma RS-X -->
+    <div class="product-card">
+        <div class="product-image">
+            <img src="https://images.unsplash.com/photo-1595950653106-6c9ebd614d3a?w=400&h=300&fit=crop" alt="Puma RS-X">
+            <div class="product-overlay">
+                <form action="{{ url_for('dashboard.add_to_cart') }}" method="POST">
+                    <input type="hidden" name="product_id" value="puma_rsx">
+                    <button type="submit" class="add-to-cart-btn">
+                        <span>Добави в количката</span>
+                        <i class="cart-icon">🛒</i>
+                    </button>
+                </form>
+            </div>
+        </div>
+        <div class="product-info">
+            <h3 class="product-name">Puma RS-X</h3>
+            <p class="product-category">Спортни</p>
+            <p class="product-description">Модерен дизайн с ретро вдъхновение.</p>
+            <div class="product-price">159.99 лв</div>
+        </div>
+    </div>
+
+    <!-- New Balance 574 -->
+    <div class="product-card">
+        <div class="product-image">
+            <img src="https://images.unsplash.com/photo-1600185365483-26d7a4cc7519?w=400&h=300&fit=crop" alt="New Balance 574">
+            <div class="product-overlay">
+                <form action="{{ url_for('dashboard.add_to_cart') }}" method="POST">
+                    <input type="hidden" name="product_id" value="new_balance_574">
+                    <button type="submit" class="add-to-cart-btn">
+                        <span>Добави в количката</span>
+                        <i class="cart-icon">🛒</i>
+                    </button>
+                </form>
+            </div>
+        </div>
+        <div class="product-info">
+            <h3 class="product-name">New Balance 574</h3>
+            <p class="product-category">Всекидневни</p>
+            <p class="product-description">Комфорт и стил за дълги разходки.</p>
+            <div class="product-price">169.99 лв</div>
+        </div>
+    </div>
+
+    <!-- Vans Old Skool -->
+    <div class="product-card">
+        <div class="product-image">
+            <img src="https://images.unsplash.com/photo-1549298916-b41d501d3772?w=400&h=300&fit=crop" alt="Vans Old Skool">
+            <div class="product-overlay">
+                <form action="{{ url_for('dashboard.add_to_cart') }}" method="POST">
+                    <input type="hidden" name="product_id" value="vans_old_skool">
+                    <button type="submit" class="add-to-cart-btn">
+                        <span>Добави в количката</span>
+                        <i class="cart-icon">🛒</i>
+                    </button>
+                </form>
+            </div>
+        </div>
+        <div class="product-info">
+            <h3 class="product-name">Vans Old Skool</h3>
+            <p class="product-category">Всекидневни</p>
+            <p class="product-description">Култови кецове за уличен стил.</p>
+            <div class="product-price">129.99 лв</div>
+        </div>
+    </div>
+
+    <!-- Converse Chuck 70 -->
+    <div class="product-card">
+        <div class="product-image">
+            <img src="https://images.unsplash.com/photo-1449505278894-297fdb3edbc1?w=400&h=300&fit=crop" alt="Converse Chuck 70">
+            <div class="product-overlay">
+                <form action="{{ url_for('dashboard.add_to_cart') }}" method="POST">
+                    <input type="hidden" name="product_id" value="converse_chuck">
+                    <button type="submit" class="add-to-cart-btn">
+                        <span>Добави в количката</span>
+                        <i class="cart-icon">🛒</i>
+                    </button>
+                </form>
+            </div>
+        </div>
+        <div class="product-info">
+            <h3 class="product-name">Converse Chuck 70</h3>
+            <p class="product-category">Всекидневни</p>
+            <p class="product-description">Премиум версия на класическите кецове.</p>
+            <div class="product-price">149.99 лв</div>
+        </div>
+    </div>
+
+    <!-- Clarks Dress Shoes -->
+    <div class="product-card">
+        <div class="product-image">
+            <img src="https://images.unsplash.com/photo-1525966222134-fcfa99b8ae77?w=400&h=300&fit=crop" alt="Clarks Dress Shoes">
+            <div class="product-overlay">
+                <form action="{{ url_for('dashboard.add_to_cart') }}" method="POST">
+                    <input type="hidden" name="product_id" value="elegant_dress">
+                    <button type="submit" class="add-to-cart-btn">
+                        <span>Добави в количката</span>
+                        <i class="cart-icon">🛒</i>
+                    </button>
+                </form>
+            </div>
+        </div>
+        <div class="product-info">
+            <h3 class="product-name">Clarks Dress Shoes</h3>
+            <p class="product-category">Елегантни</p>
+            <p class="product-description">Елегантни обувки за офис и специални поводи.</p>
+            <div class="product-price">279.99 лв</div>
+        </div>
+    </div>
+
 </div>
 
+
 <style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background: #000000 !important;
+    font-family: 'Inter', sans-serif;
+    color: white;
+}
+
 .dashboard-container {
     max-width: 1400px;
     margin: 0 auto;
@@ -304,6 +317,7 @@
     position: relative;
     height: 250px;
     overflow: hidden;
+    background: #1f2937;
 }
 
 .product-image img {

@@ -124,6 +124,7 @@
                         <th>Потребителско име</th>
                         <th>Парола</th>
                         <th>Роля</th>
+                        <th>Действия</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -132,6 +133,13 @@
                         <td>{{ user[0] }}</td>
                         <td>••••••••</td>
                         <td>{% if user[0] == 'admin' %}Администратор{% else %}Потребител{% endif %}</td>
+                       <td>
+  <a href="{{ url_for('dashboard.delete_user', order_id=loop.index) }}"
+     class="btn-delete"
+     onclick="return confirm('Сигурни ли сте, че искате да изтриете тази поръчка?');">
+    Изтрий
+  </a>
+</td>
                     </tr>
                     {% endfor %}
                 </tbody>

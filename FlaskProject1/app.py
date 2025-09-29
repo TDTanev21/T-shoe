@@ -1,9 +1,11 @@
+import os
+
 from flask import Flask
 from flask_login import LoginManager
 from auth.accounts import current_user
 
 app = Flask(__name__)
-app.config['SECRET_KEY'] = 'VERYSECRETKEY'
+app.secret_key = os.environ.get("SECRET_KEY", "some_very_secret_key")
 
 # Initialize Flask-Login
 login_manager = LoginManager()
@@ -23,6 +25,7 @@ from dashboard import dashboard_bp
 
 app.register_blueprint(main_bp)
 app.register_blueprint(auth_bp, url_prefix='/auth')
+
 app.register_blueprint(dashboard_bp, url_prefix='/dashboard')
 
 @app.context_processor

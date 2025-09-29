@@ -37,7 +37,7 @@
                     <span class="ms-2">{{ current_user.username }}</span>
                 </a>
                 <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="profileMenu">
-                    <li><a class="dropdown-item" href="">Количка 🛒</a></li>
+                    <li><a class="dropdown-item" href="{{ url_for('dashboard.cart_page') }}">Количка 🛒</a></li>
                     <li><a class="dropdown-item" href="">Настройки ⚙</a></li>
                     <li><hr class="dropdown-divider"></li>
                     <li><a class="dropdown-item" href="{{ url_for('auth.logout') }}">Излез</a></li>

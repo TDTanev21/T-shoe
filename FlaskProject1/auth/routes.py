@@ -1,33 +1,40 @@
 from flask import render_template, redirect, url_for, flash, request, session
-from flask_login import logout_user, login_manager, login_required
-
 from . import auth_bp
 from .forms import RegistrationForm, LoginForm
-from .accounts import current_user
+from .accounts import current_user, accounts  # Импортирай и accounts
 
-@auth_bp.route('/register', methods=['GET', 'POST'])
+
 @auth_bp.route('/register', methods=['GET', 'POST'])
 def register():
     form = RegistrationForm()
     try:
-        if request.method == 'POST':
+        if request.method == 'POST' and form.validate_on_submit():
             password = form.password.data
             confirm = form.confirm_password.data
             username = form.username.data
+
             if password != confirm:
-                flash('Passwords do not match', 'danger')
+                flash('Паролите не съвпадат', 'danger')
                 return render_template('auth/register.html', form=form)
-            if username in [u[0] for u in current_user.accounts]:
-                flash('Username already taken.', 'warning')
+
+            if username in [u[0] for u in accounts]:
+                flash('Потребителското име е заето.', 'warning')
                 return render_template('auth/register.html', form=form)
-            current_user.accounts.append((username, password))
-            print(current_user.accounts)
-            return render_template('auth/login.html', form=form)
+
+            accounts.append((username, password))
+            print(f"Нов потребител: {username}")
+            print(f"Всички потребители: {accounts}")
+
+            flash('Регистрацията е успешна! Моля, влезте в системата.', 'success')
+            return redirect(url_for('auth.login'))
 
     except Exception as e:
         print(f"Registration Error: {e}")
-        return redirect(url_for('errors.integrity_error'))
+        flash('Възникна грешка при регистрацията.', 'danger')
+        return redirect(url_for('auth.register'))
+
     return render_template('auth/register.html', form=form)
+
 
 @auth_bp.route('/login', methods=['GET', 'POST'])
 def login():
@@ -37,25 +44,30 @@ def login():
             username = form.username.data
             password = form.password.data
 
-            if (username, password) in current_user.accounts:
+            if (username, password) in accounts:
                 session['username'] = username
-                flash('Успешен вход!', 'success')
+                current_user.username = username
                 current_user.is_authenticated = True
+
+                flash('Успешен вход!', 'success')
+
+                if username == "admin":
+                    return redirect(url_for('dashboard.admin'))
                 return redirect(url_for('dashboard.dashboard'))
-
-            flash('Невалидно потребителско име или парола.', 'danger')
-
-        return render_template('auth/login.html', form=form)
+            else:
+                flash('Невалидно потребителско име или парола.', 'danger')
 
     except Exception as e:
         print(f"Login Error: {e}")
         flash('Възникна критична грешка.', 'danger')
-        return redirect(url_for('auth.login'))
+
+    return render_template('auth/login.html', form=form)
+
 
 @auth_bp.route('/logout')
-@login_required
 def logout():
-    logout_user()
-    flash('You have been logged out.', 'info')
+    session.pop('username', None)
+    current_user.username = None
     current_user.is_authenticated = False
+    flash('Успешно излязохте от системата.', 'info')
     return redirect(url_for('main_bp.index'))
