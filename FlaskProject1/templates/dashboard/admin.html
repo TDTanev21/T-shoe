@@ -85,34 +85,36 @@
 
     <!-- Products List -->
     <div class="management-section">
-        <h2 class="section-title">Продукти ({{ products|length }})</h2>
-        {% if products %}
-        <div class="table-container">
-            <table class="data-table">
-                <thead>
-                    <tr>
-                        <th>Име</th>
-                        <th>Категория</th>
-                        <th>Цена</th>
-                        <th>Наличност</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for product in products %}
-                    <tr>
-                        <td>{{ product.name }}</td>
-                        <td>{{ product.category }}</td>
-                        <td>{{ "%.2f"|format(product.price) }} лв</td>
-                        <td>{{ product.stock }}</td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        </div>
-        {% else %}
-        <p class="no-data">Няма продукти все още.</p>
-        {% endif %}
+    <h2 class="section-title">Продукти ({{ products|length }})</h2>
+    {% if products %}
+    <div class="table-container">
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>Име</th>
+                    <th>Категория</th>
+                    <th>Цена</th>
+                    <th>Наличност</th>
+                    <th>Информация</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for product in products %}
+                <tr>
+                    <td>{{ product.name }}</td>
+                    <td>{{ product.category }}</td>
+                    <td>{{ "%.2f"|format(product.price) }} лв</td>
+                    <td>{{ product.in_stock }}</td>
+                    <td style="font-size: 0.8rem;">{{ product.get_info() }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
     </div>
+    {% else %}
+    <p class="no-data">Няма продукти все още.</p>
+    {% endif %}
+</div>
 
     <!-- Users List -->
     <div class="management-section">
