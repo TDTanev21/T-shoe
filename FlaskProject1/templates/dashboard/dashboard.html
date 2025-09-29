@@ -21,12 +21,9 @@
             <img src="https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=400&h=300&fit=crop" alt="Nike Air Force 1">
             <div class="product-overlay">
                 <form action="{{ url_for('dashboard.add_to_cart') }}" method="POST">
-                    <input type="hidden" name="product_id" value="nike_air_force">
-                    <button type="submit" class="add-to-cart-btn">
-                        <span>Добави в количката</span>
-                        <i class="cart-icon">🛒</i>
-                    </button>
-                </form>
+    <input type="hidden" name="product_id" value="nike_air_force">
+    <button type="submit">Добави в количката</button>
+</form>
             </div>
         </div>
         <div class="product-info">

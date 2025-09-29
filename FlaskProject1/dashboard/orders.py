@@ -16,8 +16,5 @@ orders = [
 
 cart = []
 
-admin_products = [
-    {'name': 'Nike Air Force 1', 'category': 'Спортни', 'price': 199.99, 'stock': 15},
-    {'name': 'Adidas Ultraboost', 'category': 'Спортни', 'price': 229.99, 'stock': 8},
-    {'name': 'Clarks Dress Shoes', 'category': 'Елегантни', 'price': 279.99, 'stock': 5}
-]
+# Добави този речник за колички на потребителите
+user_carts = {}  # {username: [product_ids]}

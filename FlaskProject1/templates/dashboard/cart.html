@@ -1,422 +1,163 @@
-<!DOCTYPE html>
-<html lang="bg">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Количка</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+{% extends "base.html" %}
 
-        body {
-            background: linear-gradient(135deg, #0a0a0f 0%, #1a1a2e 50%, #16213e 100%);
-            min-height: 100vh;
-            font-family: 'Inter', sans-serif;
-            color: white;
-            padding: 2rem;
-        }
+{% block title %}Количка{% endblock %}
 
-        .cart-container {
-            max-width: 1200px;
-            margin: 0 auto;
-            background: #111827;
-            border-radius: 15px;
-            padding: 2rem;
-            border: 1px solid #1f2937;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-        }
-
-        .cart-header {
-            text-align: center;
-            margin-bottom: 2rem;
-        }
-
-        .welcome-title {
-            font-size: 2.5rem;
-            font-weight: 800;
-            background: linear-gradient(135deg, #ffffff 0%, #cbd5e1 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            margin-bottom: 0.5rem;
-        }
-
-        .username {
-            background: linear-gradient(135deg, #0ea5e9 0%, #10b981 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-
-        .cart-subtitle {
-            font-size: 1.2rem;
-            color: #cbd5e1;
-        }
-
-        .divider {
-            height: 2px;
-            background: linear-gradient(90deg, transparent, #0ea5e9, #10b981, transparent);
-            margin: 2rem 0;
-            border-radius: 1px;
-        }
-
-        .cart-content {
-            display: grid;
-            grid-template-columns: 2fr 1fr;
-            gap: 2rem;
-        }
-
-        .cart-items {
-            background: #1f2937;
-            border-radius: 10px;
-            padding: 1.5rem;
-            border: 1px solid #374151;
-        }
-
-        .cart-summary {
-            background: #1f2937;
-            border-radius: 10px;
-            padding: 1.5rem;
-            border: 1px solid #374151;
-            height: fit-content;
-        }
-
-        .section-title {
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: #ffffff;
-            margin-bottom: 1.5rem;
-            border-bottom: 2px solid #0ea5e9;
-            padding-bottom: 0.5rem;
-        }
-
-        .cart-item {
-            display: flex;
-            align-items: center;
-            padding: 1rem;
-            border-bottom: 1px solid #374151;
-            gap: 1rem;
-        }
-
-        .cart-item:last-child {
-            border-bottom: none;
-        }
-
-        .item-image {
-            width: 80px;
-            height: 80px;
-            border-radius: 8px;
-            overflow: hidden;
-            background: #111827;
-        }
-
-        .item-image img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        .item-info {
-            flex: 1;
-        }
-
-        .item-name {
-            font-size: 1.1rem;
-            font-weight: 600;
-            color: white;
-            margin-bottom: 0.5rem;
-        }
-
-        .item-category {
-            display: inline-block;
-            background: linear-gradient(135deg, #0ea5e9, #10b981);
-            color: white;
-            padding: 2px 8px;
-            border-radius: 12px;
-            font-size: 0.7rem;
-            font-weight: 600;
-            margin-bottom: 0.5rem;
-        }
-
-        .item-price {
-            font-size: 1.2rem;
-            font-weight: 700;
-            color: #10b981;
-        }
-
-        .item-actions {
-            display: flex;
-            gap: 0.5rem;
-        }
-
-        .btn-remove {
-            background: #ef4444;
-            color: white;
-            border: none;
-            padding: 8px 12px;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 0.8rem;
-            font-weight: 600;
-            transition: all 0.3s ease;
-        }
-
-        .btn-remove:hover {
-            background: #dc2626;
-            transform: scale(1.05);
-        }
-
-        .summary-item {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 1rem;
-            padding-bottom: 0.5rem;
-            border-bottom: 1px solid #374151;
-        }
-
-        .summary-item:last-child {
-            border-bottom: none;
-            margin-bottom: 0;
-        }
-
-        .summary-label {
-            color: #cbd5e1;
-        }
-
-        .summary-value {
-            font-weight: 600;
-            color: white;
-        }
-
-        .total-price {
-            font-size: 1.3rem;
-            font-weight: 800;
-            color: #10b981;
-        }
-
-        .checkout-btn {
-            width: 100%;
-            background: linear-gradient(135deg, #0ea5e9, #10b981);
-            color: white;
-            border: none;
-            padding: 12px;
-            border-radius: 8px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            margin-top: 1rem;
-            font-size: 1rem;
-        }
-
-        .checkout-btn:hover {
-            transform: scale(1.02);
-            box-shadow: 0 5px 15px rgba(14, 165, 233, 0.4);
-        }
-
-        .checkout-btn:disabled {
-            background: #6b7280;
-            cursor: not-allowed;
-            transform: none;
-            box-shadow: none;
-        }
-
-        .empty-cart {
-            text-align: center;
-            padding: 3rem;
-            color: #6b7280;
-        }
-
-        .empty-cart-icon {
-            font-size: 4rem;
-            margin-bottom: 1rem;
-        }
-
-        .continue-shopping {
-            display: inline-block;
-            background: linear-gradient(135deg, #0ea5e9, #10b981);
-            color: white;
-            padding: 10px 20px;
-            border-radius: 8px;
-            text-decoration: none;
-            font-weight: 600;
-            margin-top: 1rem;
-            transition: all 0.3s ease;
-        }
-
-        .continue-shopping:hover {
-            transform: scale(1.05);
-            box-shadow: 0 5px 15px rgba(14, 165, 233, 0.4);
-        }
-
-        /* Flash messages */
-        .flash-messages {
-            margin-bottom: 2rem;
-        }
-
-        .flash-message {
-            background: #111827;
-            border: 1px solid #374151;
-            border-radius: 10px;
-            padding: 1rem;
-            margin-bottom: 1rem;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-            animation: slideInDown 0.3s ease;
-        }
-
-        .flash-message.success {
-            border-left: 4px solid #10b981;
-            color: #10b981;
-        }
-
-        @keyframes slideInDown {
-            from {
-                opacity: 0;
-                transform: translateY(-20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        /* Responsive */
-        @media (max-width: 768px) {
-            .cart-content {
-                grid-template-columns: 1fr;
-            }
-
-            .cart-item {
-                flex-direction: column;
-                text-align: center;
-            }
-
-            .item-actions {
-                justify-content: center;
-            }
-        }
-    </style>
-</head>
-<body>
-    <div class="cart-container">
-        <!-- Flash Messages -->
-        <div class="flash-messages">
-            {% with messages = get_flashed_messages(with_categories=true) %}
-                {% if messages %}
-                    {% for category, message in messages %}
-                        <div class="flash-message {{ category }}">
-                            {{ message }}
-                        </div>
-                    {% endfor %}
-                {% endif %}
-            {% endwith %}
-        </div>
-
-        <div class="cart-header">
-            <h1 class="welcome-title">Вашата <span class="username">Количка</span></h1>
-            <p class="cart-subtitle">Добре дошъл, {{ current_user.username }}! Тук можеш да прегледаш и управляваш продуктите в количката си.</p>
-        </div>
-
-        <div class="divider"></div>
-
-        <div class="cart-content">
-            <div class="cart-items">
-                <h2 class="section-title">Продукти в количката</h2>
-
-                {% if cart_items %}
-                    {% set products = {
-                        'nike_air_force': {'name': 'Nike Air Force 1', 'category': 'Спортни', 'price': 199.99, 'image': 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=200&h=200&fit=crop'},
-                        'nike_jordan': {'name': 'Air Jordan 1', 'category': 'Спортни', 'price': 299.99, 'image': 'https://images.unsplash.com/photo-1600269452121-4f2416e55c28?w=200&h=200&fit=crop'},
-                        'adidas_ultraboost': {'name': 'Adidas Ultraboost', 'category': 'Спортни', 'price': 229.99, 'image': 'https://images.unsplash.com/photo-1606107557195-0e29a4b5b4aa?w=200&h=200&fit=crop'},
-                        'adidas_superstar': {'name': 'Adidas Superstar', 'category': 'Всекидневни', 'price': 179.99, 'image': 'https://images.unsplash.com/photo-1587563871167-1ee9c731aefb?w=200&h=200&fit=crop'},
-                        'puma_rsx': {'name': 'Puma RS-X', 'category': 'Спортни', 'price': 159.99, 'image': 'https://images.unsplash.com/photo-1595950653106-6c9ebd614d3a?w=200&h=200&fit=crop'},
-                        'new_balance_574': {'name': 'New Balance 574', 'category': 'Всекидневни', 'price': 169.99, 'image': 'https://images.unsplash.com/photo-1600185365483-26d7a4cc7519?w=200&h=200&fit=crop'},
-                        'vans_old_skool': {'name': 'Vans Old Skool', 'category': 'Всекидневни', 'price': 129.99, 'image': 'https://images.unsplash.com/photo-1549298916-b41d501d3772?w=200&h=200&fit=crop'},
-                        'converse_chuck': {'name': 'Converse Chuck 70', 'category': 'Всекидневни', 'price': 149.99, 'image': 'https://images.unsplash.com/photo-1449505278894-297fdb3edbc1?w=200&h=200&fit=crop'},
-                        'elegant_dress': {'name': 'Clarks Dress Shoes', 'category': 'Елегантни', 'price': 279.99, 'image': 'https://images.unsplash.com/photo-1525966222134-fcfa99b8ae77?w=200&h=200&fit=crop'}
-                    } %}
-
-                    {% set total_price = 0 %}
-                    {% for product_id in cart_items %}
-                        {% if product_id in products %}
-                            {% set product = products[product_id] %}
-                            {% set total_price = total_price + product.price %}
-                            <div class="cart-item">
-                                <div class="item-image">
-                                    <img src="{{ product.image }}" alt="{{ product.name }}">
-                                </div>
-                                <div class="item-info">
-                                    <h3 class="item-name">{{ product.name }}</h3>
-                                    <span class="item-category">{{ product.category }}</span>
-                                    <div class="item-price">{{ "%.2f"|format(product.price) }} лв</div>
-                                </div>
-                                <div class="item-actions">
-                                    <form action="{{ url_for('dashboard.remove_from_cart') }}" method="POST" style="display: inline;">
-                                        <input type="hidden" name="product_id" value="{{ product_id }}">
-                                        <button type="submit" class="btn-remove">Премахни</button>
-                                    </form>
-                                </div>
-                            </div>
-                        {% endif %}
-                    {% endfor %}
-                {% else %}
-                    <div class="empty-cart">
-                        <div class="empty-cart-icon">🛒</div>
-                        <h3>Количката ви е празна</h3>
-                        <p>Все още нямате добавени продукти в количката.</p>
-                        <a href="{{ url_for('dashboard.dashboard') }}" class="continue-shopping">Продължи с пазаруването</a>
-                    </div>
-                {% endif %}
-            </div>
-
-            {% if cart_items %}
-            <div class="cart-summary">
-                <h2 class="section-title">Резюме на поръчката</h2>
-
-                <div class="summary-item">
-                    <span class="summary-label">Брой продукти:</span>
-                    <span class="summary-value">{{ cart_items|length }}</span>
-                </div>
-
-                <div class="summary-item">
-                    <span class="summary-label">Доставка:</span>
-                    <span class="summary-value">5.00 лв</span>
-                </div>
-
-                <div class="summary-item">
-                    <span class="summary-label">Общо:</span>
-                    <span class="summary-value total-price">{{ "%.2f"|format(total_price + 5) }} лв</span>
-                </div>
-
-                <button class="checkout-btn" onclick="checkout()">
-                    Продължи към плащане
-                </button>
-
-                <p style="text-align: center; margin-top: 1rem; color: #6b7280; font-size: 0.8rem;">
-                    * Това е демо версия. Функционалността за плащане не е реализирана.
-                </p>
-            </div>
-            {% endif %}
-        </div>
+{% block content %}
+<div class="dashboard-container">
+    <div class="dashboard-header">
+        <h1 class="welcome-title">Вашата <span class="username">Количка</span></h1>
+        <p class="welcome-subtitle">Добре дошъл, {{ current_user.username }}! Тук можеш да прегледаш и управляваш продуктите в количката си.</p>
     </div>
 
-    <script>
-        function checkout() {
-            alert('Функционалността за плащане все още не е реализирана. Това е демо версия.');
-        }
+    <div class="divider"></div>
 
-        // Auto-hide flash messages after 5 seconds
-        setTimeout(function() {
-            const flashMessages = document.querySelectorAll('.flash-message');
-            flashMessages.forEach(function(message) {
-                message.style.animation = 'slideInDown 0.3s ease reverse';
-                setTimeout(function() {
-                    message.remove();
-                }, 300);
-            });
-        }, 5000);
-    </script>
-</body>
-</html>
+    <div class="cart-content">
+        <div class="cart-items">
+            <h2 class="section-title">Продукти в количката</h2>
+            
+            {% if cart_items %}
+                {% set products = {
+                    'nike_air_force': {'name': 'Nike Air Force 1', 'category': 'Спортни', 'price': 199.99, 'image': 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=200&h=200&fit=crop'},
+                    'nike_jordan': {'name': 'Air Jordan 1', 'category': 'Спортни', 'price': 299.99, 'image': 'https://images.unsplash.com/photo-1600269452121-4f2416e55c28?w=200&h=200&fit=crop'},
+                    'adidas_ultraboost': {'name': 'Adidas Ultraboost', 'category': 'Спортни', 'price': 229.99, 'image': 'https://images.unsplash.com/photo-1606107557195-0e29a4b5b4aa?w=200&h=200&fit=crop'},
+                    'adidas_superstar': {'name': 'Adidas Superstar', 'category': 'Всекидневни', 'price': 179.99, 'image': 'https://images.unsplash.com/photo-1587563871167-1ee9c731aefb?w=200&h=200&fit=crop'},
+                    'puma_rsx': {'name': 'Puma RS-X', 'category': 'Спортни', 'price': 159.99, 'image': 'https://images.unsplash.com/photo-1595950653106-6c9ebd614d3a?w=200&h=200&fit=crop'},
+                    'new_balance_574': {'name': 'New Balance 574', 'category': 'Всекидневни', 'price': 169.99, 'image': 'https://images.unsplash.com/photo-1600185365483-26d7a4cc7519?w=200&h=200&fit=crop'},
+                    'vans_old_skool': {'name': 'Vans Old Skool', 'category': 'Всекидневни', 'price': 129.99, 'image': 'https://images.unsplash.com/photo-1549298916-b41d501d3772?w=200&h=200&fit=crop'},
+                    'converse_chuck': {'name': 'Converse Chuck 70', 'category': 'Всекидневни', 'price': 149.99, 'image': 'https://images.unsplash.com/photo-1449505278894-297fdb3edbc1?w=200&h=200&fit=crop'},
+                    'elegant_dress': {'name': 'Clarks Dress Shoes', 'category': 'Елегантни', 'price': 279.99, 'image': 'https://images.unsplash.com/photo-1525966222134-fcfa99b8ae77?w=200&h=200&fit=crop'}
+                } %}
+                
+                {% set total_price = 0 %}
+                {% for product_id in cart_items %}
+                    {% if product_id in products %}
+                        {% set product = products[product_id] %}
+                        {% set total_price = total_price + product.price %}
+                        <div class="cart-item">
+                            <div class="item-image">
+                                <img src="{{ product.image }}" alt="{{ product.name }}">
+                            </div>
+                            <div class="item-info">
+                                <h3 class="item-name">{{ product.name }}</h3>
+                                <span class="item-category">{{ product.category }}</span>
+                                <div class="item-price">{{ "%.2f"|format(product.price) }} лв</div>
+                            </div>
+                            <div class="item-actions">
+                                <form action="{{ url_for('dashboard.remove_from_cart') }}" method="POST" style="display: inline;">
+                                    <input type="hidden" name="product_id" value="{{ product_id }}">
+                                    <button type="submit" class="btn-remove">Премахни</button>
+                                </form>
+                            </div>
+                        </div>
+                    {% endif %}
+                {% endfor %}
+            {% else %}
+                <div class="empty-cart">
+                    <div class="empty-cart-icon">🛒</div>
+                    <h3>Количката ви е празна</h3>
+                    <p>Все още нямате добавени продукти в количката.</p>
+                    <a href="{{ url_for('dashboard.dashboard') }}" class="continue-shopping">Продължи с пазаруването</a>
+                </div>
+            {% endif %}
+        </div>
+
+        {% if cart_items %}
+        <div class="cart-summary">
+            <h2 class="section-title">Резюме на поръчката</h2>
+            
+            <div class="summary-item">
+                <span class="summary-label">Брой продукти:</span>
+                <span class="summary-value">{{ cart_items|length }}</span>
+            </div>
+            
+            <div class="summary-item">
+                <span class="summary-label">Доставка:</span>
+                <span class="summary-value">5.00 лв</span>
+            </div>
+            
+            <div class="summary-item">
+                <span class="summary-label">Общо:</span>
+                <span class="summary-value total-price">{{ "%.2f"|format(total_price + 5) }} лв</span>
+            </div>
+
+            <button class="checkout-btn" onclick="checkout()">
+                Продължи към плащане
+            </button>
+
+            <p style="text-align: center; margin-top: 1rem; color: #6b7280; font-size: 0.8rem;">
+                * Това е демо версия. Функционалността за плащане не е реализирана.
+            </p>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<style>
+/* Добави тук всичките стилове от предишната версия */
+.cart-content {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 2rem;
+}
+
+.cart-items, .cart-summary {
+    background: #1f2937;
+    border-radius: 10px;
+    padding: 1.5rem;
+    border: 1px solid #374151;
+}
+
+.cart-item {
+    display: flex;
+    align-items: center;
+    padding: 1rem;
+    border-bottom: 1px solid #374151;
+    gap: 1rem;
+}
+
+.item-image {
+    width: 80px;
+    height: 80px;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.item-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.btn-remove {
+    background: #ef4444;
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.checkout-btn {
+    width: 100%;
+    background: linear-gradient(135deg, #0ea5e9, #10b981);
+    color: white;
+    border: none;
+    padding: 12px;
+    border-radius: 8px;
+    cursor: pointer;
+    margin-top: 1rem;
+}
+
+.empty-cart {
+    text-align: center;
+    padding: 3rem;
+    color: #6b7280;
+}
+</style>
+
+<script>
+function checkout() {
+    alert('Функционалността за плащане все още не е реализирана. Това е демо версия.');
+}
+</script>
+{% endblock %}
