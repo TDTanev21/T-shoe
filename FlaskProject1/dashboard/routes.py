@@ -10,6 +10,9 @@ def dashboard():
 
     current_user.username = session['username']
     return render_template('dashboard/dashboard.html', current_user=current_user)
-
+@dashboard_bp.route('/dashboard/cart')
 def cart():
     return render_template("dashboard/cart.html", current_user=current_user)
+@dashboard_bp.route('/add')
+def add():
+    pass

@@ -3,42 +3,478 @@
 {% block title %}Твоят Dashboard{% endblock %}
 
 {% block content %}
-<h1 class="mb-4">Добре дошъл, {{ current_user.username }}!</h1>
+<div class="dashboard-container">
+    <div class="dashboard-header">
+        <h1 class="welcome-title">Добре дошъл, <span class="username">{{ current_user.username }}</span>!</h1>
+        <p class="welcome-subtitle">Тук можеш да разглеждаш каталога с продукти и да управляваш своите данни.</p>
+    </div>
 
-<p>Тук можеш да разглеждаш каталога с продукти и да управляваш своите данни.</p>
+    <div class="divider"></div>
 
-<hr>
+    <h2 class="catalog-title">Каталог с Обувки</h2>
 
-<h2 class="mt-4">Каталог с продукти</h2>
-<div class="row row-cols-1 row-cols-md-3 g-4 mt-2">
-    <!-- Example product cards -->
-    <div class="col">
-        <div class="card h-100">
-            <img src="{{ url_for('static', filename='images/product1.jpg') }}" class="card-img-top" alt="Продукт 1">
-            <div class="card-body">
-                <h5 class="card-title">Продукт 1</h5>
-                <p class="card-text">Описание на продукта. Страхотен избор!</p>
+    <div class="products-grid">
+        <!-- Спортни обувки -->
+        <div class="product-card">
+            <div class="product-image">
+                <img src="https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=400&h=300&fit=crop" alt="Nike Air Max">
+                <div class="product-overlay">
+                    <form action="{{ url_for('dashboard.add') }}" method="POST">
+                        <input type="hidden" name="product_id" value="nike_air_max">
+                        <button type="submit" class="add-to-cart-btn">
+                            <span>Добави в количката</span>
+                            <i class="cart-icon">🛒</i>
+                        </button>
+                    </form>
+                </div>
+            </div>
+            <div class="product-info">
+                <h3 class="product-name">Nike Air Max</h3>
+                <p class="product-category">Спортни</p>
+                <p class="product-description">Удобни спортни обувки за тренировки и всекидневие.</p>
+                <div class="product-price">189.99 лв</div>
+            </div>
+        </div>
+
+        <div class="product-card">
+            <div class="product-image">
+                <img src="https://images.unsplash.com/photo-1606107557195-0e29a4b5b4aa?w=400&h=300&fit=crop" alt="Adidas Ultraboost">
+                <div class="product-overlay">
+                    <form action="{{ url_for('dashboard.add') }}" method="POST">
+                        <input type="hidden" name="product_id" value="adidas_ultraboost">
+                        <button type="submit" class="add-to-cart-btn">
+                            <span>Добави в количката</span>
+                            <i class="cart-icon">🛒</i>
+                        </button>
+                    </form>
+                </div>
+            </div>
+            <div class="product-info">
+                <h3 class="product-name">Adidas Ultraboost</h3>
+                <p class="product-category">Спортни</p>
+                <p class="product-description">Технология Boost за максимален комфорт.</p>
+                <div class="product-price">229.99 лв</div>
+            </div>
+        </div>
+
+        <div class="product-card">
+            <div class="product-image">
+                <img src="https://images.unsplash.com/photo-1595950653106-6c9ebd614d3a?w=400&h=300&fit=crop" alt="Puma RS-X">
+                <div class="product-overlay">
+                    <form action="{{ url_for('dashboard.add') }}" method="POST">
+                        <input type="hidden" name="product_id" value="puma_rsx">
+                        <button type="submit" class="add-to-cart-btn">
+                            <span>Добави в количката</span>
+                            <i class="cart-icon">🛒</i>
+                        </button>
+                    </form>
+                </div>
+            </div>
+            <div class="product-info">
+                <h3 class="product-name">Puma RS-X</h3>
+                <p class="product-category">Спортни</p>
+                <p class="product-description">Модерен дизайн с ретро вдъхновение.</p>
+                <div class="product-price">159.99 лв</div>
+            </div>
+        </div>
+
+        <!-- Елегантни обувки -->
+        <div class="product-card">
+            <div class="product-image">
+                <img src="https://images.unsplash.com/photo-1525966222134-fcfa99b8ae77?w=400&h=300&fit=crop" alt="Елегантни обувки">
+                <div class="product-overlay">
+                    <form action="{{ url_for('dashboard.add') }}" method="POST">
+                        <input type="hidden" name="product_id" value="elegant_shoes_1">
+                        <button type="submit" class="add-to-cart-btn">
+                            <span>Добави в количката</span>
+                            <i class="cart-icon">🛒</i>
+                        </button>
+                    </form>
+                </div>
+            </div>
+            <div class="product-info">
+                <h3 class="product-name">Clarks Desert Boots</h3>
+                <p class="product-category">Елегантни</p>
+                <p class="product-description">Класически чизми за всеки сезон.</p>
+                <div class="product-price">279.99 лв</div>
+            </div>
+        </div>
+
+        <div class="product-card">
+            <div class="product-image">
+                <img src="https://images.unsplash.com/photo-1531315630201-bb15abeb1653?w=400&h=300&fit=crop" alt="Мокасини">
+                <div class="product-overlay">
+                    <form action="{{ url_for('dashboard.add') }}" method="POST">
+                        <input type="hidden" name="product_id" value="moccasins">
+                        <button type="submit" class="add-to-cart-btn">
+                            <span>Добави в количката</span>
+                            <i class="cart-icon">🛒</i>
+                        </button>
+                    </form>
+                </div>
+            </div>
+            <div class="product-info">
+                <h3 class="product-name">Geox Мокасини</h3>
+                <p class="product-category">Елегантни</p>
+                <p class="product-description">Дихтящи мокасини за офис и формални събития.</p>
+                <div class="product-price">199.99 лв</div>
+            </div>
+        </div>
+
+        <div class="product-card">
+            <div class="product-image">
+                <img src="https://images.unsplash.com/photo-1614252235316-8c857d38b5f4?w=400&h=300&fit=crop" alt="Оксфорди">
+                <div class="product-overlay">
+                    <form action="{{ url_for('dashboard.add') }}" method="POST">
+                        <input type="hidden" name="product_id" value="oxford_shoes">
+                        <button type="submit" class="add-to-cart-btn">
+                            <span>Добави в количката</span>
+                            <i class="cart-icon">🛒</i>
+                        </button>
+                    </form>
+                </div>
+            </div>
+            <div class="product-info">
+                <h3 class="product-name">Hugo Boss Оксфорди</h3>
+                <p class="product-category">Елегантни</p>
+                <p class="product-description">Премиум класа за бизнес срещи.</p>
+                <div class="product-price">399.99 лв</div>
+            </div>
+        </div>
+
+        <!-- Всекидневни обувки -->
+        <div class="product-card">
+            <div class="product-image">
+                <img src="https://images.unsplash.com/photo-1525966222134-fcfa99b8ae77?w=400&h=300&fit=crop" alt="Vans Old Skool">
+                <div class="product-overlay">
+                    <form action="{{ url_for('dashboard.add') }}" method="POST">
+                        <input type="hidden" name="product_id" value="vans_old_skool">
+                        <button type="submit" class="add-to-cart-btn">
+                            <span>Добави в количката</span>
+                            <i class="cart-icon">🛒</i>
+                        </button>
+                    </form>
+                </div>
+            </div>
+            <div class="product-info">
+                <h3 class="product-name">Vans Old Skool</h3>
+                <p class="product-category">Всекидневни</p>
+                <p class="product-description">Култови кецове за уличен стил.</p>
+                <div class="product-price">129.99 лв</div>
+            </div>
+        </div>
+
+        <div class="product-card">
+            <div class="product-image">
+                <img src="https://images.unsplash.com/photo-1549298916-b41d501d3772?w=400&h=300&fit=crop" alt="Converse">
+                <div class="product-overlay">
+                    <form action="{{ url_for('dashboard.add') }}" method="POST">
+                        <input type="hidden" name="product_id" value="converse_chuck">
+                        <button type="submit" class="add-to-cart-btn">
+                            <span>Добави в количката</span>
+                            <i class="cart-icon">🛒</i>
+                        </button>
+                    </form>
+                </div>
+            </div>
+            <div class="product-info">
+                <h3 class="product-name">Converse Chuck Taylor</h3>
+                <p class="product-category">Всекидневни</p>
+                <p class="product-description">Везни класика за неформален стил.</p>
+                <div class="product-price">119.99 лв</div>
+            </div>
+        </div>
+
+        <div class="product-card">
+            <div class="product-image">
+                <img src="https://images.unsplash.com/photo-1600185365483-26d7a4cc7519?w=400&h=300&fit=crop" alt="New Balance">
+                <div class="product-overlay">
+                    <form action="{{ url_for('dashboard.add') }}" method="POST">
+                        <input type="hidden" name="product_id" value="new_balance_574">
+                        <button type="submit" class="add-to-cart-btn">
+                            <span>Добави в количката</span>
+                            <i class="cart-icon">🛒</i>
+                        </button>
+                    </form>
+                </div>
+            </div>
+            <div class="product-info">
+                <h3 class="product-name">New Balance 574</h3>
+                <p class="product-category">Всекидневни</p>
+                <p class="product-description">Комфорт и стил за дълги разходки.</p>
+                <div class="product-price">169.99 лв</div>
             </div>
         </div>
     </div>
-    <div class="col">
-        <div class="card h-100">
-            <img src="{{ url_for('static', filename='images/product2.jpg') }}" class="card-img-top" alt="Продукт 2">
-            <div class="card-body">
-                <h5 class="card-title">Продукт 2</h5>
-                <p class="card-text">Описание на продукта. Много полезен и красив.</p>
-            </div>
-        </div>
-    </div>
-    <div class="col">
-        <div class="card h-100">
-            <img src="{{ url_for('static', filename='images/product3.jpg') }}" class="card-img-top" alt="Продукт 3">
-            <div class="card-body">
-                <h5 class="card-title">Продукт 3</h5>
-                <p class="card-text">Описание на продукта. Отличен за всеки ден.</p>
-            </div>
-        </div>
+
+    <div class="cart-section">
+        <a href="{{ url_for('dashboard.cart') }}" class="view-cart-btn">
+            <span>Преглед на количката</span>
+            <i class="cart-icon-large">🛒</i>
+        </a>
     </div>
 </div>
 
+<style>
+.dashboard-container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 2rem;
+    background: #000000;
+    min-height: 100vh;
+}
+
+.dashboard-header {
+    text-align: center;
+    margin-bottom: 3rem;
+}
+
+.welcome-title {
+    font-size: 3rem;
+    font-weight: 800;
+    color: #ffffff;
+    margin-bottom: 1rem;
+}
+
+.username {
+    background: linear-gradient(135deg, #0ea5e9 0%, #10b981 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.welcome-subtitle {
+    font-size: 1.2rem;
+    color: #cbd5e1;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.divider {
+    height: 2px;
+    background: linear-gradient(90deg, transparent, #0ea5e9, #10b981, transparent);
+    margin: 2rem 0;
+    border-radius: 1px;
+}
+
+.catalog-title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    text-align: center;
+    color: #ffffff;
+    margin-bottom: 3rem;
+    position: relative;
+}
+
+.catalog-title::after {
+    content: '';
+    position: absolute;
+    bottom: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 200px;
+    height: 3px;
+    background: linear-gradient(90deg, #0ea5e9, #10b981, #8b5cf6);
+    border-radius: 2px;
+}
+
+.products-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 2rem;
+    margin-bottom: 4rem;
+}
+
+.product-card {
+    background: #111827;
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+    transition: all 0.3s ease;
+    border: 1px solid #1f2937;
+}
+
+.product-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 35px rgba(34, 211, 238, 0.2);
+    border-color: #0ea5e9;
+}
+
+.product-image {
+    position: relative;
+    height: 250px;
+    overflow: hidden;
+}
+
+.product-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+}
+
+.product-card:hover .product-image img {
+    transform: scale(1.05);
+}
+
+.product-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.7);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.product-card:hover .product-overlay {
+    opacity: 1;
+}
+
+.add-to-cart-btn {
+    background: linear-gradient(135deg, #0ea5e9, #10b981);
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 25px;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.3s ease;
+    font-family: inherit;
+}
+
+.add-to-cart-btn:hover {
+    transform: scale(1.05);
+    box-shadow: 0 5px 15px rgba(14, 165, 233, 0.4);
+}
+
+.product-info {
+    padding: 1.5rem;
+}
+
+.product-name {
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: white;
+    margin-bottom: 0.5rem;
+}
+
+.product-category {
+    display: inline-block;
+    background: linear-gradient(135deg, #0ea5e9, #10b981);
+    color: white;
+    padding: 4px 12px;
+    border-radius: 15px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    margin-bottom: 0.8rem;
+}
+
+.product-description {
+    color: #cbd5e1;
+    font-size: 0.9rem;
+    line-height: 1.5;
+    margin-bottom: 1rem;
+}
+
+.product-price {
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: #10b981;
+    text-align: right;
+}
+
+.cart-section {
+    text-align: center;
+    margin-top: 3rem;
+}
+
+.view-cart-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    background: linear-gradient(135deg, #0ea5e9, #10b981);
+    color: white;
+    padding: 15px 30px;
+    border-radius: 30px;
+    text-decoration: none;
+    font-weight: 700;
+    font-size: 1.1rem;
+    transition: all 0.3s ease;
+    box-shadow: 0 5px 15px rgba(14, 165, 233, 0.3);
+}
+
+.view-cart-btn:hover {
+    transform: scale(1.05);
+    box-shadow: 0 8px 25px rgba(14, 165, 233, 0.5);
+    color: white;
+    text-decoration: none;
+}
+
+.cart-icon-large {
+    font-size: 1.2rem;
+}
+
+/* Анимация за добавяне в количката */
+@keyframes addToCart {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+    100% { transform: scale(1); }
+}
+
+.add-to-cart-btn:active {
+    animation: addToCart 0.3s ease;
+}
+
+/* Responsive дизайн */
+@media (max-width: 768px) {
+    .dashboard-container {
+        padding: 1rem;
+    }
+
+    .welcome-title {
+        font-size: 2rem;
+    }
+
+    .products-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .product-card {
+        margin-bottom: 1rem;
+    }
+}
+</style>
+
+<script>
+// JavaScript за визуална обратна връзка при кликване на бутона
+document.addEventListener('DOMContentLoaded', function() {
+    const addToCartButtons = document.querySelectorAll('.add-to-cart-btn');
+
+    addToCartButtons.forEach(button => {
+        button.addEventListener('click', function(e) {
+            // Временна визуална обратна връзка
+            const btn = e.target.closest('.add-to-cart-btn');
+            const originalHTML = btn.innerHTML;
+
+            btn.style.background = 'linear-gradient(135deg, #10b981, #059669)';
+            btn.innerHTML = '<span>Добавено!</span> <i class="cart-icon">✅</i>';
+            btn.disabled = true;
+
+            setTimeout(() => {
+                btn.style.background = 'linear-gradient(135deg, #0ea5e9, #10b981)';
+                btn.innerHTML = originalHTML;
+                btn.disabled = false;
+            }, 2000);
+        });
+    });
+});
+</script>
 {% endblock %}
