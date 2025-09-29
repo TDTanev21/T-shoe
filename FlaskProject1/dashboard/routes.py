@@ -140,3 +140,38 @@ def remove_from_cart():
         flash('Продуктът е премахнат от количката!', 'success')
 
     return redirect(url_for('dashboard.cart_page'))
+
+
+@dashboard_bp.route('/admin/delete_user/<username>')
+def delete_user(username):
+    if 'username' not in session or session['username'] != 'admin':
+        flash('Нямате права за тази операция.', 'error')
+        return redirect(url_for('dashboard.dashboard'))
+
+    # Не позволявай изтриване на администратора
+    if username == 'admin':
+        flash('Не можете да изтриете администраторския акаунт.', 'error')
+        return redirect(url_for('dashboard.admin'))
+
+    # Изтриване на потребителя от accounts списъка
+    global accounts
+    accounts = [user for user in accounts if user[0] != username]
+
+    flash(f'Потребител {username} е изтрит успешно!', 'success')
+    return redirect(url_for('dashboard.admin'))
+
+
+@dashboard_bp.route('/admin/delete_order/<int:order_id>', methods=['POST'])
+def delete_order(order_id):
+    if 'username' not in session or session['username'] != 'admin':
+        flash('Нямате права за тази операция.', 'error')
+        return redirect(url_for('dashboard.dashboard'))
+
+    from .orders import orders
+    if 0 < order_id <= len(orders):
+        deleted_order = orders.pop(order_id - 1)
+        flash(f'Поръчка #{order_id} е изтрита успешно!', 'success')
+    else:
+        flash('Поръчката не е намерена.', 'error')
+
+    return redirect(url_for('dashboard.admin'))

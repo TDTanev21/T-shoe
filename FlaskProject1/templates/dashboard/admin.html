@@ -136,7 +136,7 @@
                         <td>••••••••</td>
                         <td>{% if user[0] == 'admin' %}Администратор{% else %}Потребител{% endif %}</td>
                        <td>
-  <a href="{{ url_for('dashboard.delete_user',username =user[0] )}}"
+  <a href="{{ url_for('dashboard.delete_user',username=user[0] )}}"
      class="btn-delete"
      onclick="return confirm('Сигурни ли сте, че искате да изтриете тази поръчка?');">
     Изтрий
@@ -150,49 +150,51 @@
     </div>
 
     <!-- Orders List -->
-    <div class="management-section">
-        <h2 class="section-title">Поръчки ({{ orders|length }})</h2>
-        {% if orders %}
-        <div class="table-container">
-            <table class="data-table">
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Потребител</th>
-                        <th>Продукти</th>
-                        <th>Обща сума</th>
-                        <th>Статус</th>
-                        <th>Действия</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for order in orders %}
-                    <tr>
-                        <td>#{{ loop.index }}</td>
-                        <td>{{ order.user }}</td>
-                        <td>{{ order.products|length }} продукта</td>
-                        <td>{{ "%.2f"|format(order.total) }} лв</td>
-                        <td>
-                            <span class="status-badge {{ order.status }}">
-                                {{ order.status }}
-                            </span>
-                        </td>
-                        <td>
-                            <a href="{{ url_for('dashboard.delete_order', order_id=loop.index) }}"
-                               class="btn-delete"
-                               onclick="return confirm('Сигурни ли сте, че искате да изтриете тази поръчка?')">
+<!-- Orders List -->
+<div class="management-section">
+    <h2 class="section-title">Поръчки ({{ orders|length }})</h2>
+    {% if orders %}
+    <div class="table-container">
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Потребител</th>
+                    <th>Продукти</th>
+                    <th>Обща сума</th>
+                    <th>Статус</th>
+                    <th>Действия</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for order in orders %}
+                <tr>
+                    <td>#{{ loop.index }}</td>
+                    <td>{{ order.user }}</td>
+                    <td>{{ order.products|length }} продукта</td>
+                    <td>{{ "%.2f"|format(order.total) }} лв</td>
+                    <td>
+                        <span class="status-badge {{ order.status }}">
+                            {{ order.status }}
+                        </span>
+                    </td>
+                    <td>
+                        <!-- Промени този ред: -->
+                        <form action="{{ url_for('dashboard.delete_order', order_id=loop.index) }}" method="POST" style="display: inline;">
+                            <button type="submit" class="btn-delete"
+                                    onclick="return confirm('Сигурни ли сте, че искате да изтриете тази поръчка?')">
                                 Изтрий
-                            </a>
-                        </td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        </div>
-        {% else %}
-        <p class="no-data">Няма поръчки все още.</p>
-        {% endif %}
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
     </div>
+    {% else %}
+    <p class="no-data">Няма поръчки все още.</p>
+    {% endif %}
 </div>
 
 <style>
