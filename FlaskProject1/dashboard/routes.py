@@ -1,8 +1,9 @@
 from flask import render_template, session, redirect, url_for, flash, request
 from auth.accounts import current_user, accounts
 from . import dashboard_bp
-from .orders import cart, orders, admin_products, products_dict
+from .orders import cart, orders, all_products, products_dict, CATEGORIES, BRANDS
 from .products import SportShoe, FormalShoe, CasualShoe
+
 
 @dashboard_bp.route('/dashboard')
 def dashboard():
@@ -10,23 +11,80 @@ def dashboard():
         flash('Моля, влезте в системата, за да видите дашборда.', 'warning')
         return redirect(url_for('auth.login'))
 
+    # Вземи параметрите за филтриране
+    search_term = request.args.get('search', '')
+    category_filter = request.args.get('category', '')
+    subcategory_filter = request.args.get('subcategory', '')
+    brand_filter = request.args.get('brand', '')
+    min_price = request.args.get('min_price', '')
+    max_price = request.args.get('max_price', '')
+
+    # Филтрирай продуктите
+    filtered_products = {}
+    for product_id, product in products_dict.items():
+        # Търсене
+        if search_term and not product.matches_search(search_term):
+            continue
+
+        # Филтър по категория
+        if category_filter and product.category != category_filter:
+            continue
+
+        # Филтър по подкатегория
+        if subcategory_filter and product.subcategory != subcategory_filter:
+            continue
+
+        # Филтър по марка
+        if brand_filter and product.brand != brand_filter:
+            continue
+
+        # Филтър по цена
+        if min_price:
+            try:
+                if product.price < float(min_price):
+                    continue
+            except ValueError:
+                pass
+
+        if max_price:
+            try:
+                if product.price > float(max_price):
+                    continue
+            except ValueError:
+                pass
+
+        filtered_products[product_id] = product
+
     product_images = {
-        'nike_air_force': 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=400&h=300&fit=crop',
-        'adidas_ultraboost': 'https://images.unsplash.com/photo-1606107557195-0e29a4b5b4aa?w=400&h=300&fit=crop',
-        'puma_rsx': 'https://images.unsplash.com/photo-1595950653106-6c9ebd614d3a?w=400&h=300&fit=crop',
-        'clarks_dress': 'https://images.unsplash.com/photo-1525966222134-fcfa99b8ae77?w=400&h=300&fit=crop',
-        'hugo_boss': 'https://images.unsplash.com/photo-1614252235316-8c857d38b5f4?w=400&h=300&fit=crop',
-        'adidas_superstar': 'https://images.unsplash.com/photo-1587563871167-1ee9c731aefb?w=400&h=300&fit=crop',
-        'new_balance_574': 'https://images.unsplash.com/photo-1600185365483-26d7a4cc7519?w=400&h=300&fit=crop',
-        'vans_old_skool': 'https://images.unsplash.com/photo-1549298916-b41d501d3772?w=400&h=300&fit=crop',
-        'converse_chuck': 'https://images.unsplash.com/photo-1449505278894-297fdb3edbc1?w=400&h=300&fit=crop'
+        'nike_air_force_1_0': 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=400&h=300&fit=crop',
+        'adidas_ultraboost_1': 'https://images.unsplash.com/photo-1606107557195-0e29a4b5b4aa?w=400&h=300&fit=crop',
+        'puma_rs-x_2': 'https://images.unsplash.com/photo-1595950653106-6c9ebd614d3a?w=400&h=300&fit=crop',
+        'adidas_predator_3': 'https://images.unsplash.com/photo-1549298916-b41d501d3772?w=400&h=300&fit=crop',
+        'nike_air_max_4': 'https://images.unsplash.com/photo-1600185365483-26d7a4cc7519?w=400&h=300&fit=crop',
+        'clarks_oxford_5': 'https://images.unsplash.com/photo-1525966222134-fcfa99b8ae77?w=400&h=300&fit=crop',
+        'hugo_boss_boss_classic_6': 'https://images.unsplash.com/photo-1614252235316-8c857d38b5f4?w=400&h=300&fit=crop',
+        'geox_derby_7': 'https://images.unsplash.com/photo-1531315630201-bb15abeb1653?w=400&h=300&fit=crop',
+        'salvatore_monk_strap_8': 'https://images.unsplash.com/photo-1449505278894-297fdb3edbc1?w=400&h=300&fit=crop',
+        'adidas_superstar_9': 'https://images.unsplash.com/photo-1587563871167-1ee9c731aefb?w=400&h=300&fit=crop',
+        'new_balance_574_10': 'https://images.unsplash.com/photo-1600185365483-26d7a4cc7519?w=400&h=300&fit=crop',
+        'vans_old_skool_11': 'https://images.unsplash.com/photo-1549298916-b41d501d3772?w=400&h=300&fit=crop',
+        'converse_chuck_70_12': 'https://images.unsplash.com/photo-1449505278894-297fdb3edbc1?w=400&h=300&fit=crop',
+        'clarks_desert_boot_13': 'https://images.unsplash.com/photo-1525966222134-fcfa99b8ae77?w=400&h=300&fit=crop'
     }
 
     current_user.username = session['username']
     return render_template('dashboard/dashboard.html',
-                         current_user=current_user,
-                         products_dict=products_dict,
-                         product_images=product_images)  # Добави това
+                           current_user=current_user,
+                           products_dict=filtered_products,
+                           product_images=product_images,
+                           categories=CATEGORIES,
+                           brands=BRANDS,
+                           search_term=search_term,
+                           category_filter=category_filter,
+                           subcategory_filter=subcategory_filter,
+                           brand_filter=brand_filter,
+                           min_price=min_price,
+                           max_price=max_price)
 
 @dashboard_bp.route('/dashboard/cart')
 def cart_page():

@@ -11,13 +11,91 @@
 
     <div class="divider"></div>
 
-    <h2 class="catalog-title">Каталог с Обувки</h2>
+    <!-- Филтри и търсене -->
+    <div class="filters-section">
+        <h2 class="catalog-title">Търсене и Филтри</h2>
+
+        <form method="GET" class="filters-form">
+            <div class="filter-row">
+                <!-- Търсачка -->
+                <div class="filter-group">
+                    <label for="search">Търсене:</label>
+                    <input type="text" id="search" name="search" value="{{ search_term }}"
+                           placeholder="Търси по име, марка, категория...">
+                </div>
+
+                <!-- Категория -->
+                <div class="filter-group">
+                    <label for="category">Категория:</label>
+                    <select id="category" name="category" onchange="this.form.submit()">
+                        <option value="">Всички категории</option>
+                        {% for category in categories %}
+                        <option value="{{ category }}" {% if category_filter == category %}selected{% endif %}>
+                            {{ category }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <!-- Подкатегория -->
+                <div class="filter-group">
+                    <label for="subcategory">Подкатегория:</label>
+                    <select id="subcategory" name="subcategory" onchange="this.form.submit()">
+                        <option value="">Всички подкатегории</option>
+                        {% if category_filter %}
+                            {% for subcat in categories[category_filter] %}
+                            <option value="{{ subcat }}" {% if subcategory_filter == subcat %}selected{% endif %}>
+                                {{ subcat }}
+                            </option>
+                            {% endfor %}
+                        {% endif %}
+                    </select>
+                </div>
+            </div>
+
+            <div class="filter-row">
+                <!-- Марка -->
+                <div class="filter-group">
+                    <label for="brand">Марка:</label>
+                    <select id="brand" name="brand" onchange="this.form.submit()">
+                        <option value="">Всички марки</option>
+                        {% for brand in brands %}
+                        <option value="{{ brand }}" {% if brand_filter == brand %}selected{% endif %}>
+                            {{ brand }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <!-- Цена -->
+                <div class="filter-group">
+                    <label for="min_price">Цена от:</label>
+                    <input type="number" id="min_price" name="min_price" value="{{ min_price }}"
+                           placeholder="мин" step="0.01" onchange="this.form.submit()">
+                </div>
+
+                <div class="filter-group">
+                    <label for="max_price">до:</label>
+                    <input type="number" id="max_price" name="max_price" value="{{ max_price }}"
+                           placeholder="макс" step="0.01" onchange="this.form.submit()">
+                </div>
+
+                <div class="filter-group">
+                    <button type="submit" class="filter-btn">🔍 Търси</button>
+                    <a href="{{ url_for('dashboard.dashboard') }}" class="clear-btn">❌ Изчисти</a>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <h2 class="catalog-title">Каталог с Обувки ({{ products_dict|length }} продукта)</h2>
 
     <div class="products-grid">
         {% for product_id, product in products_dict.items() %}
         <div class="product-card">
             <div class="product-image">
-                <img src="{{ product_images[product_id] }}" alt="{{ product.name }}">
+                <img src="{{ product_images.get(product_id, 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=400&h=300&fit=crop') }}"
+                     alt="{{ product.name }}">
                 <div class="product-overlay">
                     <form action="{{ url_for('dashboard.add_to_cart') }}" method="POST">
                         <input type="hidden" name="product_id" value="{{ product_id }}">
@@ -30,21 +108,33 @@
                 </div>
             </div>
             <div class="product-info">
-                <h3 class="product-name">{{ product.name }}</h3>
-                <p class="product-category">{{ product.category }}</p>
+                <h3 class="product-name">{{ product.brand }} {{ product.name }}</h3>
+                <div class="product-meta">
+                    <span class="product-category">{{ product.category }}</span>
+                    <span class="product-subcategory">{{ product.subcategory }}</span>
+                </div>
                 <p class="product-description">{{ product.get_info() }}</p>
+                <div class="product-details">
+                    <span class="product-color">🎨 {{ product.color }}</span>
+                    <span class="product-size">📏 Размер: {{ product.size }}</span>
+                </div>
                 <div class="product-price">{{ "%.2f"|format(product.price) }} лв</div>
-                <div class="product-stock" style="font-size: 0.9rem; color: {% if product.in_stock > 5 %}#10b981{% elif product.in_stock > 0 %}#f59e0b{% else %}#ef4444{% endif %};">
+                <div class="product-stock">
                     Налични: {{ product.in_stock }}
                 </div>
             </div>
+        </div>
+        {% else %}
+        <div class="no-products">
+            <h3>Няма намерени продукти</h3>
+            <p>Промени критериите за търсене или опитай отново.</p>
         </div>
         {% endfor %}
     </div>
 
     <div class="cart-section">
         <a href="{{ url_for('dashboard.cart_page') }}" class="view-cart-btn">
-            <span>Преглед на количката</span>
+            <span>Преглед на количката ({{ session.get('cart', [])|length }})</span>
             <i class="cart-icon-large">🛒</i>
         </a>
     </div>
@@ -125,6 +215,87 @@ body {
     border-radius: 2px;
 }
 
+/* Стилове за филтрите */
+.filters-section {
+    background: #111827;
+    padding: 2rem;
+    border-radius: 15px;
+    margin-bottom: 2rem;
+    border: 1px solid #1f2937;
+}
+
+.filters-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.filter-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+    align-items: end;
+}
+
+.filter-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.filter-group label {
+    color: #cbd5e1;
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+
+.filter-group input,
+.filter-group select {
+    padding: 10px;
+    border: 1px solid #374151;
+    border-radius: 8px;
+    background: #1f2937;
+    color: white;
+    font-size: 0.9rem;
+    width: 100%;
+}
+
+.filter-group input:focus,
+.filter-group select:focus {
+    outline: none;
+    border-color: #0ea5e9;
+}
+
+.filter-btn,
+.clear-btn {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    text-decoration: none;
+    text-align: center;
+    transition: all 0.3s ease;
+    font-size: 0.9rem;
+}
+
+.filter-btn {
+    background: linear-gradient(135deg, #0ea5e9, #10b981);
+    color: white;
+}
+
+.clear-btn {
+    background: #6b7280;
+    color: white;
+    margin-left: 0.5rem;
+}
+
+.filter-btn:hover,
+.clear-btn:hover {
+    transform: scale(1.05);
+}
+
+/* Стилове за продуктите */
 .products-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
@@ -219,6 +390,13 @@ body {
     margin-bottom: 0.5rem;
 }
 
+.product-meta {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 0.8rem;
+    flex-wrap: wrap;
+}
+
 .product-category {
     display: inline-block;
     background: linear-gradient(135deg, #0ea5e9, #10b981);
@@ -227,7 +405,15 @@ body {
     border-radius: 15px;
     font-size: 0.8rem;
     font-weight: 600;
-    margin-bottom: 0.8rem;
+}
+
+.product-subcategory {
+    background: linear-gradient(135deg, #8b5cf6, #ec4899);
+    color: white;
+    padding: 4px 8px;
+    border-radius: 10px;
+    font-size: 0.7rem;
+    font-weight: 600;
 }
 
 .product-description {
@@ -237,12 +423,54 @@ body {
     margin-bottom: 1rem;
 }
 
+.product-details {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1rem;
+    font-size: 0.8rem;
+    color: #cbd5e1;
+    flex-wrap: wrap;
+}
+
+.product-color,
+.product-size {
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+}
+
 .product-price {
     font-size: 1.5rem;
     font-weight: 800;
     color: #10b981;
     text-align: right;
     margin-bottom: 0.5rem;
+}
+
+.product-stock {
+    font-size: 0.9rem;
+    color: #10b981;
+    text-align: right;
+}
+
+.product-stock[style*="#f59e0b"] {
+    color: #f59e0b;
+}
+
+.product-stock[style*="#ef4444"] {
+    color: #ef4444;
+}
+
+.no-products {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 3rem;
+    color: #6b7280;
+}
+
+.no-products h3 {
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
 }
 
 .cart-section {
@@ -286,6 +514,10 @@ body {
         font-size: 2rem;
     }
 
+    .filter-row {
+        grid-template-columns: 1fr;
+    }
+
     .products-grid {
         grid-template-columns: 1fr;
     }
@@ -293,6 +525,45 @@ body {
     .product-card {
         margin-bottom: 1rem;
     }
+
+    .product-details {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .filters-section {
+        padding: 1rem;
+    }
+
+    .filter-group {
+        text-align: center;
+    }
 }
 </style>
+
+<script>
+// Автоматично подаване на формата при промяна на филтрите
+document.addEventListener('DOMContentLoaded', function() {
+    const filters = document.querySelectorAll('select, input[type="number"]');
+    filters.forEach(filter => {
+        if (!filter.onchange) {
+            filter.addEventListener('change', function() {
+                this.form.submit();
+            });
+        }
+    });
+
+    // Обновяване на подкатегориите при промяна на категорията
+    const categorySelect = document.getElementById('category');
+    const subcategorySelect = document.getElementById('subcategory');
+
+    if (categorySelect && subcategorySelect) {
+        categorySelect.addEventListener('change', function() {
+            // Това ще се случи автоматично чрез формата
+        });
+    }
+});
+</script>
 {% endblock %}

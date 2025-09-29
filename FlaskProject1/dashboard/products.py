@@ -1,9 +1,13 @@
 class Shoe:
-    def __init__(self, name, price, in_stock, category):
+    def __init__(self, name, price, in_stock, category, subcategory, brand, color, size):
         self.name = name
         self.__price = price
         self.in_stock = in_stock
         self.category = category
+        self.subcategory = subcategory
+        self.brand = brand
+        self.color = color
+        self.size = size
 
     @property
     def price(self):
@@ -14,29 +18,37 @@ class Shoe:
         if new_price < 0:
             raise ValueError('Price cannot be negative')
         self.__price = new_price
+
     def get_info(self):
-        return f"{self.name} - {self.category} - {self.price} лв - Налични: {self.in_stock}"
+        return f"{self.brand} {self.name} - {self.color} - Размер: {self.size}"
 
     def update_stock(self, quantity):
         self.in_stock += quantity
 
+    def matches_search(self, search_term):
+        search_term = search_term.lower()
+        return (search_term in self.name.lower() or
+                search_term in self.brand.lower() or
+                search_term in self.category.lower() or
+                search_term in self.subcategory.lower())
+
 class SportShoe(Shoe):
-    def __init__(self, name, price, in_stock):
-        super().__init__(name, price, in_stock, category="Sport")
+    def __init__(self, name, price, in_stock, subcategory, brand, color, size):
+        super().__init__(name, price, in_stock, "Спортни", subcategory, brand, color, size)
 
     def get_info(self):
-        return f"Спортни обувки: {super().get_info()}"
+        return f"{self.subcategory}: {super().get_info()}"
 
 class FormalShoe(Shoe):
-    def __init__(self, name, price, in_stock):
-        super().__init__(name, price, in_stock, category="Official")
+    def __init__(self, name, price, in_stock, subcategory, brand, color, size):
+        super().__init__(name, price, in_stock, "Елегантни", subcategory, brand, color, size)
 
     def get_info(self):
-        return f"Официални обувки: {super().get_info()}"
+        return f"{self.subcategory}: {super().get_info()}"
 
 class CasualShoe(Shoe):
-    def __init__(self, name, price, in_stock):
-        super().__init__(name, price, in_stock, category="Casual")
+    def __init__(self, name, price, in_stock, subcategory, brand, color, size):
+        super().__init__(name, price, in_stock, "Всекидневни", subcategory, brand, color, size)
 
     def get_info(self):
-        return f"Всекидневни обувки: {super().get_info()}"
+        return f"{self.subcategory}: {super().get_info()}"

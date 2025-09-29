@@ -1,51 +1,53 @@
 from .products import SportShoe, FormalShoe, CasualShoe
 
-# Създаваме инстанции на обувките
-sport_shoe1 = SportShoe("Nike Air Force 1", 199.99, 15)
-sport_shoe2 = SportShoe("Adidas Ultraboost", 229.99, 8)
-sport_shoe3 = SportShoe("Puma RS-X", 159.99, 12)
+sport_shoe1 = SportShoe("Air Force 1", 199.99, 15, "Баскетбол", "Nike", "Бял", "42")
+sport_shoe2 = SportShoe("Ultraboost", 229.99, 8, "Бягане", "Adidas", "Черен", "43")
+sport_shoe3 = SportShoe("RS-X", 159.99, 12, "Тренировка", "Puma", "Син", "41")
+sport_shoe4 = SportShoe("Predator", 299.99, 6, "Футбол", "Adidas", "Червен", "44")
+sport_shoe5 = SportShoe("Air Max", 179.99, 10, "Бягане", "Nike", "Сив", "42")
 
-formal_shoe1 = FormalShoe("Clarks Dress Shoes", 279.99, 5)
-formal_shoe2 = FormalShoe("Hugo Boss Оксфорди", 399.99, 3)
+# Елегантни обувки
+formal_shoe1 = FormalShoe("Oxford", 279.99, 5, "Оксфорди", "Clarks", "Кафяв", "43")
+formal_shoe2 = FormalShoe("Boss Classic", 399.99, 3, "Лофери", "Hugo Boss", "Черен", "44")
+formal_shoe3 = FormalShoe("Derby", 249.99, 7, "Дърбита", "Geox", "Черен", "42")
+formal_shoe4 = FormalShoe("Monk Strap", 329.99, 4, "Монкстрапове", "Salvatore", "Кафяв", "43")
 
-casual_shoe1 = CasualShoe("Adidas Superstar", 179.99, 10)
-casual_shoe2 = CasualShoe("New Balance 574", 169.99, 7)
-casual_shoe3 = CasualShoe("Vans Old Skool", 129.99, 20)
-casual_shoe4 = CasualShoe("Converse Chuck 70", 149.99, 15)
+# Всекидневни обувки
+casual_shoe1 = CasualShoe("Superstar", 179.99, 10, "Кецове", "Adidas", "Бял", "42")
+casual_shoe2 = CasualShoe("574", 169.99, 7, "Кецове", "New Balance", "Сив", "43")
+casual_shoe3 = CasualShoe("Old Skool", 129.99, 20, "Кецове", "Vans", "Черен", "41")
+casual_shoe4 = CasualShoe("Chuck 70", 149.99, 15, "Кецове", "Converse", "Червен", "42")
+casual_shoe5 = CasualShoe("Desert Boot", 189.99, 8, "Ботуши", "Clarks", "Бежов", "43")
 
-# Списък с всички продукти за администраторски панел
-admin_products = [
-    sport_shoe1, sport_shoe2, sport_shoe3,
-    formal_shoe1, formal_shoe2,
-    casual_shoe1, casual_shoe2, casual_shoe3, casual_shoe4
+# Списък с всички продукти
+all_products = [
+    sport_shoe1, sport_shoe2, sport_shoe3, sport_shoe4, sport_shoe5,
+    formal_shoe1, formal_shoe2, formal_shoe3, formal_shoe4,
+    casual_shoe1, casual_shoe2, casual_shoe3, casual_shoe4, casual_shoe5
 ]
 
-# Речник за бърз достъп по ID (за количката)
-products_dict = {
-    'nike_air_force': sport_shoe1,
-    'adidas_ultraboost': sport_shoe2,
-    'puma_rsx': sport_shoe3,
-    'clarks_dress': formal_shoe1,
-    'hugo_boss': formal_shoe2,
-    'adidas_superstar': casual_shoe1,
-    'new_balance_574': casual_shoe2,
-    'vans_old_skool': casual_shoe3,
-    'converse_chuck': casual_shoe4
+# Речник за бърз достъп по ID
+products_dict = {}
+for i, product in enumerate(all_products):
+    product_id = f"{product.brand.lower()}_{product.name.lower().replace(' ', '_')}_{i}"
+    products_dict[product_id] = product
+
+# Категории и подкатегории
+CATEGORIES = {
+    "Спортни": ["Бягане", "Баскетбол", "Футбол", "Тенис", "Тренировка", "Волейбол"],
+    "Елегантни": ["Оксфорди", "Дърбита", "Лофери", "Монкстрапове", "Брогове"],
+    "Всекидневни": ["Кецове", "Мокасини", "Ботуши", "Сандали", "Еспадрили"]
 }
 
-# Примерни данни за поръчки
+BRANDS = ["Nike", "Adidas", "Puma", "New Balance", "Vans", "Converse", "Clarks", "Hugo Boss", "Geox", "Salvatore"]
+
+# Примерни поръчки
 orders = [
     {
         'user': 'user1',
-        'products': ['nike_air_force', 'adidas_ultraboost'],
+        'products': ['adidas_ultraboost_1', 'nike_air_force_1_0'],
         'total': 429.98,
         'status': 'изпълнена'
-    },
-    {
-        'user': 'user2', 
-        'products': ['converse_chuck'],
-        'total': 149.99,
-        'status': 'обработва се'
     }
 ]
 
