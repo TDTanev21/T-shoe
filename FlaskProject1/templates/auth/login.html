@@ -1,12 +1,150 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="bg">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login</title>
+    <title>Вход</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/login.css') }}">
+    <style>
+        body {
+            background: linear-gradient(135deg, #0a0a0f 0%, #1a1a2e 50%, #16213e 100%);
+            min-height: 100vh;
+            font-family: 'Inter', sans-serif;
+            color: white;
+        }
+
+        .login-container {
+            max-width: 400px;
+            margin: 100px auto;
+            padding: 2rem;
+            background: #111827;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            border: 1px solid #1f2937;
+        }
+
+        .login-container h2 {
+            text-align: center;
+            margin-bottom: 1.5rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #ffffff 0%, #cbd5e1 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .input-group {
+            margin-bottom: 1rem;
+        }
+
+        .input-group-text {
+            background: #1f2937;
+            border: 1px solid #374151;
+            border-right: none;
+            color: #cbd5e1;
+        }
+
+        .form-control {
+            background: #1f2937;
+            border: 1px solid #374151;
+            border-left: none;
+            color: white;
+            padding: 12px;
+        }
+
+        .form-control:focus {
+            background: #1f2937;
+            border-color: #0ea5e9;
+            color: white;
+            box-shadow: 0 0 0 0.2rem rgba(14, 165, 233, 0.25);
+        }
+
+        .password-toggle {
+            background: #1f2937;
+            border: 1px solid #374151;
+            border-left: none;
+            color: #cbd5e1;
+            cursor: pointer;
+            padding: 12px;
+        }
+
+        .btn-login {
+            width: 100%;
+            background: linear-gradient(135deg, #0ea5e9, #10b981);
+            border: none;
+            color: white;
+            padding: 12px;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            margin-top: 1rem;
+        }
+
+        .btn-login:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(14, 165, 233, 0.4);
+        }
+
+        /* Flash messages styling */
+        .flash-messages {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+            min-width: 300px;
+        }
+
+        .flash-message {
+            background: #111827;
+            border: 1px solid #374151;
+            border-radius: 10px;
+            padding: 1rem;
+            margin-bottom: 0.5rem;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            animation: slideInRight 0.3s ease;
+        }
+
+        .flash-message.success {
+            border-left: 4px solid #10b981;
+            color: #10b981;
+        }
+
+        .flash-message.danger {
+            border-left: 4px solid #ef4444;
+            color: #ef4444;
+        }
+
+        .flash-message.warning {
+            border-left: 4px solid #f59e0b;
+            color: #f59e0b;
+        }
+
+        @keyframes slideInRight {
+            from {
+                opacity: 0;
+                transform: translateX(100%);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .text-muted {
+            color: #9ca3af !important;
+            text-align: center;
+        }
+
+        a {
+            color: #0ea5e9;
+            text-decoration: none;
+        }
+
+        a:hover {
+            color: #38bdf8;
+        }
+    </style>
 </head>
 <body>
     <!-- Logo горе вляво -->
@@ -16,36 +154,41 @@
         </a>
     </div>
 
-    <div class="login-container">
-        <h2>Log in</h2>
+    <!-- Flash Messages -->
+    <div class="flash-messages">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="flash-message {{ category }}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+    </div>
 
-        {% if error_message %}
-            <div class="alert alert-danger" role="alert">
-                {{ error_message }}
-            </div>
-        {% endif %}
+    <div class="login-container">
+        <h2>Вход</h2>
 
         <form method="POST" action="{{ url_for('auth.login') }}">
-            {% if form.csrf_token %}
-                {{ form.csrf_token }}
-            {% endif %}
+            {{ form.hidden_tag() }}
 
             <div class="mb-3 input-group">
                 <span class="input-group-text"><i class="bi bi-person-fill"></i></span>
-                <input type="text" id="username" name="username" class="form-control" placeholder="Username" required>
+                {{ form.username(class="form-control", placeholder="Потребителско име", required=true) }}
             </div>
 
             <div class="mb-3 input-group">
                 <span class="input-group-text"><i class="bi bi-key-fill"></i></span>
-                <input type="password" id="password" name="password" class="form-control" placeholder="Password" required>
+                {{ form.password(class="form-control", placeholder="Парола", required=true) }}
                 <span class="input-group-text password-toggle" onclick="togglePassword()">
                     <i class="bi bi-eye-fill" id="toggleIcon"></i>
                 </span>
             </div>
 
-            <button type="submit" class="btn btn-login mb-3">Login</button>
+            <button type="submit" class="btn btn-login mb-3">Влез</button>
 
-            <p class="text-muted">Don't have an account? <a href="{{ url_for('auth.register') }}">Register</a></p>
+            <p class="text-muted">Нямаш акаунт? <a href="{{ url_for('auth.register') }}">Регистрирай се</a></p>
         </form>
     </div>
 
@@ -63,6 +206,17 @@
                 toggleIcon.classList.add('bi-eye-fill');
             }
         }
+
+        // Auto-hide flash messages after 5 seconds
+        setTimeout(function() {
+            const flashMessages = document.querySelectorAll('.flash-message');
+            flashMessages.forEach(function(message) {
+                message.style.animation = 'slideInRight 0.3s ease reverse';
+                setTimeout(function() {
+                    message.remove();
+                }, 300);
+            });
+        }, 5000);
     </script>
 </body>
 </html>

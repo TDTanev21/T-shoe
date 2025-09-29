@@ -1,0 +1,402 @@
+{% extends "base.html" %}
+
+{% block title %}Admin Dashboard{% endblock %}
+
+{% block content %}
+<div class="dashboard-container">
+    <div class="dashboard-header">
+        <h1 class="welcome-title">Административен <span class="username">Панел</span></h1>
+        <p class="welcome-subtitle">Управление на продукти, потребители и поръчки</p>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- Statistics Cards -->
+    <div class="stats-grid">
+        <div class="stat-card">
+            <div class="stat-icon">👥</div>
+            <div class="stat-info">
+                <h3 class="stat-number">{{ users_count }}</h3>
+                <p class="stat-label">Потребители</p>
+            </div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-icon">👟</div>
+            <div class="stat-info">
+                <h3 class="stat-number">{{ products_count }}</h3>
+                <p class="stat-label">Продукти</p>
+            </div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-icon">📦</div>
+            <div class="stat-info">
+                <h3 class="stat-number">{{ orders_count }}</h3>
+                <p class="stat-label">Поръчки</p>
+            </div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-icon">💰</div>
+            <div class="stat-info">
+                <h3 class="stat-number">{{ "%.2f"|format(total_revenue) }} лв</h3>
+                <p class="stat-label">Общ приход</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Product Form -->
+    <div class="management-section">
+        <h2 class="section-title">Добави Нов Продукт</h2>
+        <form action="{{ url_for('dashboard.add_product') }}" method="POST" class="product-form">
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="name">Име на продукт</label>
+                    <input type="text" id="name" name="name" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="category">Категория</label>
+                    <select id="category" name="category" required>
+                        <option value="Спортни">Спортни</option>
+                        <option value="Всекидневни">Всекидневни</option>
+                        <option value="Елегантни">Елегантни</option>
+                        <option value="Ботуши">Ботуши</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="price">Цена (лв)</label>
+                    <input type="number" id="price" name="price" step="0.01" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="stock">Наличност</label>
+                    <input type="number" id="stock" name="stock" required>
+                </div>
+            </div>
+
+            <button type="submit" class="add-product-btn">Добави Продукт</button>
+        </form>
+    </div>
+
+    <!-- Products List -->
+    <div class="management-section">
+        <h2 class="section-title">Продукти ({{ products|length }})</h2>
+        {% if products %}
+        <div class="table-container">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Име</th>
+                        <th>Категория</th>
+                        <th>Цена</th>
+                        <th>Наличност</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for product in products %}
+                    <tr>
+                        <td>{{ product.name }}</td>
+                        <td>{{ product.category }}</td>
+                        <td>{{ "%.2f"|format(product.price) }} лв</td>
+                        <td>{{ product.stock }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <p class="no-data">Няма продукти все още.</p>
+        {% endif %}
+    </div>
+
+    <!-- Users List -->
+    <div class="management-section">
+        <h2 class="section-title">Потребители ({{ users|length }})</h2>
+        <div class="table-container">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Потребителско име</th>
+                        <th>Парола</th>
+                        <th>Роля</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for user in users %}
+                    <tr>
+                        <td>{{ user[0] }}</td>
+                        <td>••••••••</td>
+                        <td>{% if user[0] == 'admin' %}Администратор{% else %}Потребител{% endif %}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Orders List -->
+    <div class="management-section">
+        <h2 class="section-title">Поръчки ({{ orders|length }})</h2>
+        {% if orders %}
+        <div class="table-container">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Потребител</th>
+                        <th>Продукти</th>
+                        <th>Обща сума</th>
+                        <th>Статус</th>
+                        <th>Действия</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for order in orders %}
+                    <tr>
+                        <td>#{{ loop.index }}</td>
+                        <td>{{ order.user }}</td>
+                        <td>{{ order.products|length }} продукта</td>
+                        <td>{{ "%.2f"|format(order.total) }} лв</td>
+                        <td>
+                            <span class="status-badge {{ order.status }}">
+                                {{ order.status }}
+                            </span>
+                        </td>
+                        <td>
+                            <a href="{{ url_for('dashboard.delete_order', order_id=loop.index) }}"
+                               class="btn-delete"
+                               onclick="return confirm('Сигурни ли сте, че искате да изтриете тази поръчка?')">
+                                Изтрий
+                            </a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <p class="no-data">Няма поръчки все още.</p>
+        {% endif %}
+    </div>
+</div>
+
+<style>
+/* Statistics Grid */
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 3rem;
+}
+
+.stat-card {
+    background: #111827;
+    border-radius: 15px;
+    padding: 2rem;
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    border: 1px solid #1f2937;
+    transition: all 0.3s ease;
+}
+
+.stat-card:hover {
+    transform: translateY(-5px);
+    border-color: #0ea5e9;
+    box-shadow: 0 10px 25px rgba(14, 165, 233, 0.2);
+}
+
+.stat-icon {
+    font-size: 2.5rem;
+}
+
+.stat-info {
+    flex: 1;
+}
+
+.stat-number {
+    font-size: 2rem;
+    font-weight: 800;
+    background: linear-gradient(135deg, #0ea5e9, #10b981);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 0.5rem;
+}
+
+.stat-label {
+    color: #cbd5e1;
+    font-size: 0.9rem;
+}
+
+/* Management Sections */
+.management-section {
+    margin-bottom: 3rem;
+}
+
+.section-title {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: #ffffff;
+    margin-bottom: 1.5rem;
+}
+
+/* Forms */
+.product-form {
+    background: #111827;
+    padding: 2rem;
+    border-radius: 10px;
+    border: 1px solid #1f2937;
+}
+
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.form-group {
+    margin-bottom: 1rem;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    color: #cbd5e1;
+    font-weight: 600;
+}
+
+.form-group input,
+.form-group select {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #374151;
+    border-radius: 5px;
+    background: #1f2937;
+    color: white;
+    font-size: 1rem;
+}
+
+.form-group input:focus,
+.form-group select:focus {
+    outline: none;
+    border-color: #0ea5e9;
+}
+
+.add-product-btn {
+    background: linear-gradient(135deg, #0ea5e9, #10b981);
+    color: white;
+    border: none;
+    padding: 12px 30px;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.add-product-btn:hover {
+    transform: scale(1.05);
+    box-shadow: 0 5px 15px rgba(14, 165, 233, 0.4);
+}
+
+/* Tables */
+.table-container {
+    background: #111827;
+    border-radius: 10px;
+    overflow: hidden;
+    border: 1px solid #1f2937;
+}
+
+.data-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.data-table th {
+    background: #1f2937;
+    padding: 1rem;
+    text-align: left;
+    font-weight: 600;
+    color: #ffffff;
+    border-bottom: 1px solid #374151;
+}
+
+.data-table td {
+    padding: 1rem;
+    border-bottom: 1px solid #374151;
+    color: #cbd5e1;
+}
+
+.data-table tr:hover {
+    background: #1a2435;
+}
+
+/* Status Badges */
+.status-badge {
+    padding: 4px 12px;
+    border-radius: 15px;
+    font-size: 0.8rem;
+    font-weight: 600;
+}
+
+.status-badge.изпълнена {
+    background: #10b981;
+    color: white;
+}
+
+.status-badge.обработва-се {
+    background: #f59e0b;
+    color: white;
+}
+
+.status-badge.чакаща {
+    background: #6b7280;
+    color: white;
+}
+
+/* Buttons */
+.btn-delete {
+    background: #ef4444;
+    color: white;
+    padding: 6px 12px;
+    border-radius: 5px;
+    text-decoration: none;
+    font-size: 0.8rem;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.btn-delete:hover {
+    background: #dc2626;
+    transform: scale(1.05);
+}
+
+.no-data {
+    text-align: center;
+    color: #6b7280;
+    font-style: italic;
+    padding: 2rem;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .stats-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .form-row {
+        grid-template-columns: 1fr;
+    }
+
+    .table-container {
+        overflow-x: auto;
+    }
+}
+</style>
+{% endblock %}
