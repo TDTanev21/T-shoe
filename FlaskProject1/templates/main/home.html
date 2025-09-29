@@ -1,55 +1,298 @@
 {% extends "base.html" %}
 
-{% block title %}Register | T Shoe{% endblock %}
-
-{% block link %}
-<link rel="stylesheet" href="{{ url_for('static', filename='register.css') }}">
-{% endblock %}
+{% block title %}Открий Перфектния Чифт | Начална Страница{% endblock %}
 
 {% block content %}
-<div class="register-container">
-    <h2>Register</h2>
+<div class="min-h-screen flex flex-col items-center justify-center px-4 py-20 relative
+            bg-gradient-to-br from-gray-900 via-gray-950 to-gray-800 overflow-hidden">
 
-    {% if error_message %}
-        <div class="alert alert-danger" role="alert">
-            {{ error_message }}
-        </div>
-    {% endif %}
+    <div class="absolute inset-0 pointer-events-none">
+        <div class="absolute w-96 h-96 bg-cyan-500 opacity-10 rounded-full top-10 left-10 animate-pulse-slow"></div>
+        <div class="absolute w-72 h-72 bg-teal-400 opacity-10 rounded-full bottom-20 right-16 animate-pulse-slow"></div>
+        <div class="absolute w-80 h-80 bg-purple-500 opacity-5 rounded-full top-1/3 right-1/4 animate-pulse-slow"></div>
+    </div>
 
-    <form method="POST">
-        <div class="mb-3 input-group">
-            <span class="input-group-text"><i class="bi bi-person-fill"></i></span>
-            <input type="text" id="username" name="username" class="form-control" placeholder="Username" required>
-        </div>
-        <div class="mb-3 input-group">
-            <span class="input-group-text"><i class="bi bi-key-fill"></i></span>
-            <input type="password" id="password" name="password" class="form-control" placeholder="Password" required>
-            <i class="bi bi-eye-fill password-toggle" onclick="togglePassword('password', this)"></i>
-        </div>
-        <div class="mb-3 input-group">
-            <span class="input-group-text"><i class="bi bi-key-fill"></i></span>
-            <input type="password" id="confirm_password" name="confirm_password" class="form-control" placeholder="Repeat Password" required>
-            <i class="bi bi-eye-fill password-toggle" onclick="togglePassword('confirm_password', this)"></i>
-        </div>
+    <div class="max-w-3xl text-center relative z-10">
+        <span class="text-xl font-semibold text-cyan-400 uppercase tracking-widest mb-6 block animate-title">
+            Нови Колекции 2024
+        </span>
 
-        <button type="submit" class="btn btn-register">Register</button>
+        <h1 class="hero-title animate-title">
+            Открий <span class="hero-accent">Перфектния</span> Чифт
+        </h1>
 
-        <p class="text-muted mt-3">Already have an account? <a href="{{ url_for('auth.login') }}">Log in</a></p>
-    </form>
+        <p class="hero-subtitle animate-subtitle">
+            Елегантност и Комфорт във Всяка Стъпка. Разгледай най-новите модели маратонки, кецове и официални обувки.
+        </p>
+
+        {% if current_user.is_authenticated %}
+            <a href="{{ url_for('dashboard.dashboard') }}"
+               class="cta-button inline-block bg-cyan-500 text-white px-10 py-4 rounded-full font-bold text-lg shadow-lg
+                      hover:bg-cyan-400 hover:scale-105 transition-all transform duration-300 animate-button">
+                Отиди към твоя Dashboard
+            </a>
+        {% else %}
+            <a href="{{ url_for('auth.register') }}"
+               class="cta-button inline-block bg-cyan-500 text-white px-10 py-4 rounded-full font-bold text-lg shadow-lg
+                      hover:bg-cyan-400 hover:scale-105 transition-all transform duration-300 animate-button">
+                Започнете сега
+            </a>
+        {% endif %}
+    </div>
 </div>
 
-<script>
-    function togglePassword(id, icon) {
-        const input = document.getElementById(id);
-        if(input.type === "password") {
-            input.type = "text";
-            icon.classList.remove('bi-eye-fill');
-            icon.classList.add('bi-eye-slash-fill');
-        } else {
-            input.type = "password";
-            icon.classList.remove('bi-eye-slash-fill');
-            icon.classList.add('bi-eye-fill');
-        }
-    }
-</script>
+<div class="container mx-auto py-20 px-4">
+    <h2 class="section-title">Нашите Любими Модели</h2>
+
+    <div class="shoe-cards-container">
+        <!-- Картичка 1 -->
+        <div class="shoe-card">
+            <img src="{{ url_for('static', filename='images/shoes_home1.jpg') }}" alt="Футболни бутонки">
+            <div class="shoe-card-content">
+                <h3>Футболни</h3>
+                <p>За футболните фенове</p>
+            </div>
+        </div>
+        <div class="shoe-card">
+            <img src="{{ url_for('static', filename='images/shoes_home2.jpg') }}" alt="Всекидневни обувки">
+            <div class="shoe-card-content">
+                <h3>Всекидневни</h3>
+                <p>Комфорт</p>
+            </div>
+        </div>
+        <div class="shoe-card">
+            <img src="{{ url_for('static', filename='images/shoes_home3.jpg') }}" alt="Елегантни обувки">
+            <div class="shoe-card-content">
+                <h3>Елегантни</h3>
+                <p>Стил</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    body {
+    font-family: 'Inter', sans-serif;
+    min-height: 100vh;
+    background: linear-gradient(135deg, #0a0a0f, #1f1f29, #0d0d13);
+    overflow-x: hidden;
+    color: white;
+}
+
+.hero-title {
+    font-size: 4.5rem;
+    font-weight: 900;
+    background: linear-gradient(135deg, #ffffff 0%, #cbd5e1 50%, #94a3b8 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    text-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+    line-height: 1.1;
+    margin-bottom: 1.5rem;
+    position: relative;
+}
+
+.hero-title::after {
+    content: '';
+    position: absolute;
+    bottom: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100px;
+    height: 3px;
+    background: linear-gradient(90deg, #0ea5e9, #10b981, #8b5cf6);
+    border-radius: 2px;
+}
+
+.hero-subtitle {
+    font-size: 1.4rem;
+    font-weight: 300;
+    color: #cbd5e1;
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+    letter-spacing: 0.5px;
+    line-height: 1.6;
+    max-width: 600px;
+    margin: 0 auto 3rem;
+    position: relative;
+}
+
+.hero-accent {
+    background: linear-gradient(135deg, #0ea5e9 0%, #10b981 50%, #8b5cf6 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    font-weight: 800;
+}
+
+.section-title {
+    font-size: 3rem;
+    font-weight: 800;
+    text-align: center;
+    background: linear-gradient(135deg, #ffffff 0%, #e2e8f0 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 3rem;
+    position: relative;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+}
+
+.section-title::before {
+    content: '★';
+    position: absolute;
+    top: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 1.5rem;
+    color: #0ea5e9;
+}
+
+.section-title::after {
+    content: '';
+    position: absolute;
+    bottom: -15px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 150px;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, #0ea5e9, #10b981, transparent);
+}
+
+/* Стилове за квадратчетата */
+.shoe-cards-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 25px;
+    flex-wrap: nowrap;
+    max-width: 950px;
+    margin: 0 auto;
+    padding: 40px 20px;
+}
+
+.shoe-card {
+    width: 275px;
+    height: 300px;
+    background: linear-gradient(145deg, #111827, #0f172a);
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.5);
+    transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    display: flex;
+    flex-direction: column;
+    flex-shrink: 0;
+    position: relative;
+}
+
+.shoe-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, #0ea5e9, #10b981, #8b5cf6);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.shoe-card:hover::before {
+    opacity: 1;
+}
+
+.shoe-card:hover {
+    transform: scale(1.05) translateY(-5px);
+    box-shadow: 0 15px 35px rgba(34, 211, 238, 0.25);
+    background: linear-gradient(145deg, #1e293b, #1a2438);
+}
+
+.shoe-card img {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    transition: transform 0.4s ease;
+}
+
+.shoe-card:hover img {
+    transform: scale(1.08);
+}
+
+.shoe-card-content {
+    padding: 15px 12px;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    background: linear-gradient(to bottom, rgba(17, 24, 39, 0.9), #111827);
+}
+
+.shoe-card h3 {
+    font-size: 18px;
+    font-weight: bold;
+    color: white;
+    text-align: center;
+    margin: 0 0 8px 0;
+    line-height: 1.3;
+}
+
+.shoe-card p {
+    font-size: 14px;
+    color: #d1d5db;
+    text-align: center;
+    margin: 0;
+    line-height: 1.4;
+}
+
+.shoe-card:nth-child(1):hover {
+    box-shadow: 0 15px 35px rgba(34, 211, 238, 0.3);
+}
+
+.shoe-card:nth-child(2):hover {
+    box-shadow: 0 15px 35px rgba(45, 212, 191, 0.3);
+}
+
+.shoe-card:nth-child(3):hover {
+    box-shadow: 0 15px 35px rgba(168, 85, 247, 0.3);
+}
+
+/* Анимации */
+@keyframes fadeInDown {
+    from { opacity: 0; transform: translateY(-20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+@keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+.animate-title { animation: fadeInDown 1s ease-out forwards; opacity: 0; animation-delay: 0.3s; }
+.animate-subtitle { animation: fadeInDown 1s ease-out forwards; opacity: 0; animation-delay: 0.6s; }
+.animate-button { animation: fadeInUp 1s ease-out forwards; opacity: 0; animation-delay: 0.9s; }
+
+@keyframes pulse-slow {
+    0%, 100% { transform: scale(1); opacity: 0.1; }
+    50% { transform: scale(1.1); opacity: 0.15; }
+}
+.animate-pulse-slow { animation: pulse-slow 8s ease-in-out infinite; }
+
+@keyframes glow {
+    0%, 100% { text-shadow: 0 0 10px rgba(14, 165, 233, 0.5); }
+    50% { text-shadow: 0 0 20px rgba(14, 165, 233, 0.8), 0 0 30px rgba(16, 185, 129, 0.6); }
+}
+
+.hero-title:hover {
+    animation: glow 2s ease-in-out infinite;
+}
+
+.cta-button {
+    font-size: 1.1rem;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+}
+
+a:hover {
+    transition: all 0.3s ease;
+}
+</style>
 {% endblock %}

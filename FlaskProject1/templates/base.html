@@ -34,18 +34,13 @@
             <div class="dropdown">
                 <a class="d-flex align-items-center text-decoration-none dropdown-toggle" href="#"
                    id="profileMenu" data-bs-toggle="dropdown" aria-expanded="false">
-                    <img src="{{ url_for('static', filename='images/' ~ current_user.username ~ '_pfp.png') }}"
-                         onerror="this.src='{{ url_for('static', filename='images/account.png') }}'"
-                         alt="Profile Picture"
-                         class="rounded-circle"
-                         style="width: 40px; height: 40px; object-fit: cover;">
                     <span class="ms-2">{{ current_user.username }}</span>
                 </a>
                 <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="profileMenu">
-                    <li><a class="dropdown-item" href="{{ url_for('profile.dashboard') }}">Dashboard</a></li>
-                    <li><a class="dropdown-item" href="{{ url_for('profile.settings') }}">Settings</a></li>
+                    <li><a class="dropdown-item" href="">Количка 🛒</a></li>
+                    <li><a class="dropdown-item" href="">Настройки ⚙</a></li>
                     <li><hr class="dropdown-divider"></li>
-                    <li><a class="dropdown-item" href="{{ url_for('auth.logout') }}">Logout</a></li>
+                    <li><a class="dropdown-item" href="{{ url_for('auth.logout') }}">Излез</a></li>
                 </ul>
             </div>
             {% else %}

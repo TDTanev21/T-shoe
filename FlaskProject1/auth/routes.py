@@ -1,4 +1,6 @@
 from flask import render_template, redirect, url_for, flash, request, session
+from flask_login import logout_user, login_manager, login_required
+
 from . import auth_bp
 from .forms import RegistrationForm, LoginForm
 from .accounts import current_user
@@ -38,6 +40,7 @@ def login():
             if (username, password) in current_user.accounts:
                 session['username'] = username
                 flash('Успешен вход!', 'success')
+                current_user.is_authenticated = True
                 return redirect(url_for('dashboard.dashboard'))
 
             flash('Невалидно потребителско име или парола.', 'danger')
@@ -48,3 +51,11 @@ def login():
         print(f"Login Error: {e}")
         flash('Възникна критична грешка.', 'danger')
         return redirect(url_for('auth.login'))
+
+@auth_bp.route('/logout')
+@login_required
+def logout():
+    logout_user()
+    flash('You have been logged out.', 'info')
+    current_user.is_authenticated = False
+    return redirect(url_for('main_bp.index'))
