@@ -2,7 +2,7 @@
 
 UML Class Diagram : https://lucid.app/lucidchart/e65ad63f-8187-463e-af72-1379328d284a/edit?invitationId=inv_2209259e-b0aa-4a03-a9e8-49e04164b807
 <br>
-Entity Relationship diagram : 
+Entity Relationship diagram : https://lucid.app/lucidchart/d169de8a-14ad-498e-903e-c7aae9062a72/edit?invitationId=inv_b8542d9f-e9b8-4400-ad3f-d139753ddfc3
 <br>
 Activity diagram : https://lucid.app/lucidchart/fabc8ca1-dd77-4fe6-b612-aaa6ed4654ad/edit?invitationId=inv_d228156b-2ab6-46db-bbce-3b93f9e9a9f4
 <br>
