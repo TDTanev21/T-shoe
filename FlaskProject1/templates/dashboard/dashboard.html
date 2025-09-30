@@ -4,6 +4,21 @@
 
 {% block content %}
 <div class="dashboard-container">
+    {% if unread_notifications and unread_notifications|length > 0 %}
+    <div class="notification-banner">
+        <div class="alert alert-info d-flex justify-content-between align-items-center">
+            <div>
+                <strong>🆕 Имате {{ unread_notifications|length }} нови нотификации!</strong>
+                - Проверете новодобавените продукти.
+            </div>
+            <a href="{{ url_for('dashboard.mark_all_notifications_read') }}"
+               class="btn btn-sm btn-outline-info">
+                Маркирай всички като прочетени
+            </a>
+        </div>
+    </div>
+    {% endif %}
+
     <div class="dashboard-header">
         <h1 class="welcome-title">Добре дошъл, <span class="username">{{ current_user.username }}</span>!</h1>
         <p class="welcome-subtitle">Тук можеш да разглеждаш каталога с продукти и да управляваш своите данни.</p>
@@ -11,20 +26,17 @@
 
     <div class="divider"></div>
 
-    <!-- Филтри и търсене -->
     <div class="filters-section">
         <h2 class="catalog-title">Търсене и Филтри</h2>
 
         <form method="GET" class="filters-form">
             <div class="filter-row">
-                <!-- Търсачка -->
                 <div class="filter-group">
                     <label for="search">Търсене:</label>
                     <input type="text" id="search" name="search" value="{{ search_term }}"
                            placeholder="Търси по име, марка, категория...">
                 </div>
 
-                <!-- Категория -->
                 <div class="filter-group">
                     <label for="category">Категория:</label>
                     <select id="category" name="category" onchange="this.form.submit()">
@@ -37,7 +49,6 @@
                     </select>
                 </div>
 
-                <!-- Подкатегория -->
                 <div class="filter-group">
                     <label for="subcategory">Подкатегория:</label>
                     <select id="subcategory" name="subcategory" onchange="this.form.submit()">
@@ -54,7 +65,6 @@
             </div>
 
             <div class="filter-row">
-                <!-- Марка -->
                 <div class="filter-group">
                     <label for="brand">Марка:</label>
                     <select id="brand" name="brand" onchange="this.form.submit()">
@@ -67,7 +77,6 @@
                     </select>
                 </div>
 
-                <!-- Цена -->
                 <div class="filter-group">
                     <label for="min_price">Цена от:</label>
                     <input type="number" id="min_price" name="min_price" value="{{ min_price }}"
@@ -215,7 +224,6 @@ body {
     border-radius: 2px;
 }
 
-/* Стилове за филтрите */
 .filters-section {
     background: #111827;
     padding: 2rem;
@@ -295,7 +303,6 @@ body {
     transform: scale(1.05);
 }
 
-/* Стилове за продуктите */
 .products-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
@@ -504,7 +511,6 @@ body {
     font-size: 1.2rem;
 }
 
-/* Responsive дизайн */
 @media (max-width: 768px) {
     .dashboard-container {
         padding: 1rem;
@@ -544,7 +550,7 @@ body {
 </style>
 
 <script>
-// Автоматично подаване на формата при промяна на филтрите
+
 document.addEventListener('DOMContentLoaded', function() {
     const filters = document.querySelectorAll('select, input[type="number"]');
     filters.forEach(filter => {
@@ -555,13 +561,11 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
-    // Обновяване на подкатегориите при промяна на категорията
     const categorySelect = document.getElementById('category');
     const subcategorySelect = document.getElementById('subcategory');
 
     if (categorySelect && subcategorySelect) {
         categorySelect.addEventListener('change', function() {
-            // Това ще се случи автоматично чрез формата
         });
     }
 });

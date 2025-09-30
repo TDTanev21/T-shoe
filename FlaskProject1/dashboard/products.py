@@ -1,5 +1,5 @@
 class Shoe:
-    def __init__(self, name, price, in_stock, category, subcategory, brand, color, size):
+    def __init__(self, name, price, in_stock, category, subcategory="Общи", brand="Други", color="Черен", size="42"):
         self.name = name
         self.__price = price
         self.in_stock = in_stock
@@ -33,21 +33,21 @@ class Shoe:
                 search_term in self.subcategory.lower())
 
 class SportShoe(Shoe):
-    def __init__(self, name, price, in_stock, subcategory, brand, color, size):
+    def __init__(self, name, price, in_stock, subcategory="Тениски", brand="Nike", color="Бял", size="42"):
         super().__init__(name, price, in_stock, "Спортни", subcategory, brand, color, size)
 
     def get_info(self):
         return f"{self.subcategory}: {super().get_info()}"
 
 class FormalShoe(Shoe):
-    def __init__(self, name, price, in_stock, subcategory, brand, color, size):
+    def __init__(self, name, price, in_stock, subcategory="Оксфорди", brand="Clarks", color="Черен", size="42"):
         super().__init__(name, price, in_stock, "Елегантни", subcategory, brand, color, size)
 
     def get_info(self):
         return f"{self.subcategory}: {super().get_info()}"
 
 class CasualShoe(Shoe):
-    def __init__(self, name, price, in_stock, subcategory, brand, color, size):
+    def __init__(self, name, price, in_stock, subcategory="Кецове", brand="Adidas", color="Син", size="42"):
         super().__init__(name, price, in_stock, "Всекидневни", subcategory, brand, color, size)
 
     def get_info(self):

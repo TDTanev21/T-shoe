@@ -18,6 +18,55 @@
         .navbar-brand img {
             height: auto;
         }
+        .notification-badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background: #ef4444;
+            color: white;
+            border-radius: 50%;
+            width: 18px;
+            height: 18px;
+            font-size: 0.7rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .notification-dropdown {
+            min-width: 300px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        .notification-item {
+            padding: 0.75rem;
+            border-bottom: 1px solid #e9ecef;
+        }
+        .notification-item:last-child {
+            border-bottom: none;
+        }
+        .notification-item.unread {
+            background-color: #f8f9fa;
+        }
+        .notification-product {
+            font-weight: 600;
+            color: #0ea5e9;
+        }
+        .notification-category {
+            font-size: 0.8rem;
+            color: #6b7280;
+        }
+        .notification-price {
+            font-weight: 600;
+            color: #10b981;
+        }
+        .notification-time {
+            font-size: 0.7rem;
+            color: #9ca3af;
+        }
+        .mark-all-read {
+            font-size: 0.8rem;
+            padding: 0.5rem 1rem;
+        }
     </style>
 
     {% block extra_head %}{% endblock %}
@@ -31,6 +80,65 @@
 
         <div class="ms-auto d-flex align-items-center">
             {% if current_user.is_authenticated %}
+
+            <div class="dropdown me-3">
+                <a class="position-relative text-decoration-none" href="#" id="notificationDropdown"
+                   data-bs-toggle="dropdown" aria-expanded="false">
+                    <i class="bi bi-bell fs-5"></i>
+                    {% if unread_notifications and unread_notifications|length > 0 %}
+                    <span class="notification-badge">{{ unread_notifications|length }}</span>
+                    {% endif %}
+                </a>
+                <ul class="dropdown-menu dropdown-menu-end notification-dropdown" aria-labelledby="notificationDropdown">
+                    <li class="dropdown-header d-flex justify-content-between align-items-center">
+                        <span>Нотификации</span>
+                        {% if unread_notifications and unread_notifications|length > 0 %}
+                        <a href="{{ url_for('dashboard.mark_all_notifications_read') }}" class="mark-all-read text-decoration-none">
+                            Маркирай всички като прочетени
+                        </a>
+                        {% endif %}
+                    </li>
+
+                    {% if unread_notifications and unread_notifications|length > 0 %}
+                        {% for notification in unread_notifications %}
+                        <li>
+                            <div class="notification-item unread">
+                                <div class="d-flex justify-content-between align-items-start">
+                                    <div class="flex-grow-1">
+                                        <div class="notification-product">
+                                            🆕 {{ notification.product_name }}
+                                        </div>
+                                        <div class="notification-category">
+                                            Категория: {{ notification.category }}
+                                        </div>
+                                        <div class="notification-price">
+                                            Цена: {{ "%.2f"|format(notification.price) }} лв
+                                        </div>
+                                        <div class="notification-time">
+                                            {{ notification.timestamp.strftime('%H:%M %d.%m.%Y') }}
+                                        </div>
+                                    </div>
+                                    <a href="{{ url_for('dashboard.mark_notification_read', notification_id=notification.id) }}"
+                                       class="btn btn-sm btn-outline-secondary ms-2" title="Маркирай като прочетено">
+                                        ✕
+                                    </a>
+                                </div>
+                            </div>
+                        </li>
+                        {% endfor %}
+                    {% else %}
+                        <li class="notification-item text-center text-muted py-3">
+                            Няма нови нотификации
+                        </li>
+                    {% endif %}
+
+                    <li><hr class="dropdown-divider"></li>
+                    <li class="text-center">
+                        <small class="text-muted">Нотификации за нови продукти</small>
+                    </li>
+                </ul>
+            </div>
+
             <div class="dropdown">
                 <a class="d-flex align-items-center text-decoration-none dropdown-toggle" href="#"
                    id="profileMenu" data-bs-toggle="dropdown" aria-expanded="false">

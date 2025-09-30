@@ -7,7 +7,6 @@ from auth.accounts import current_user
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'VERYSECRETKEY'
 
-# Initialize Flask-Login
 login_manager = LoginManager()
 login_manager.login_view = 'auth.login'
 login_manager.init_app(app)

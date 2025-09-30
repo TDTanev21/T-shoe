@@ -86,7 +86,6 @@
             box-shadow: 0 5px 15px rgba(14, 165, 233, 0.4);
         }
 
-        /* Flash messages styling */
         .flash-messages {
             position: fixed;
             top: 20px;
@@ -147,14 +146,12 @@
     </style>
 </head>
 <body>
-    <!-- Logo горе вляво -->
     <div style="position: absolute; top: 20px; left: 20px;">
         <a href="{{ url_for('main_bp.index') }}">
             <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Logo" width="150" style="height:auto;">
         </a>
     </div>
 
-    <!-- Flash Messages -->
     <div class="flash-messages">
         {% with messages = get_flashed_messages(with_categories=true) %}
             {% if messages %}
@@ -207,7 +204,6 @@
             }
         }
 
-        // Auto-hide flash messages after 5 seconds
         setTimeout(function() {
             const flashMessages = document.querySelectorAll('.flash-message');
             flashMessages.forEach(function(message) {

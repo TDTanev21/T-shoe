@@ -11,7 +11,6 @@
 
     <div class="divider"></div>
 
-    <!-- Statistics Cards -->
     <div class="stats-grid">
         <div class="stat-card">
             <div class="stat-icon">👥</div>
@@ -46,7 +45,6 @@
         </div>
     </div>
 
-    <!-- Add Product Form -->
     <div class="management-section">
         <h2 class="section-title">Добави Нов Продукт</h2>
         <form action="{{ url_for('dashboard.add_product') }}" method="POST" class="product-form">
@@ -83,7 +81,6 @@
         </form>
     </div>
 
-    <!-- Products List -->
     <div class="management-section">
     <h2 class="section-title">Продукти ({{ products|length }})</h2>
     {% if products %}
@@ -116,7 +113,6 @@
     {% endif %}
 </div>
 
-    <!-- Users List -->
     <div class="management-section">
         <h2 class="section-title">Потребители ({{ users|length }})</h2>
         <div class="table-container">
@@ -149,8 +145,6 @@
         </div>
     </div>
 
-    <!-- Orders List -->
-<!-- Orders List -->
 <div class="management-section">
     <h2 class="section-title">Поръчки ({{ orders|length }})</h2>
     {% if orders %}
@@ -179,7 +173,6 @@
                         </span>
                     </td>
                     <td>
-                        <!-- Промени този ред: -->
                         <form action="{{ url_for('dashboard.delete_order', order_id=loop.index) }}" method="POST" style="display: inline;">
                             <button type="submit" class="btn-delete"
                                     onclick="return confirm('Сигурни ли сте, че искате да изтриете тази поръчка?')">
@@ -198,7 +191,6 @@
 </div>
 
 <style>
-/* Statistics Grid */
 .stats-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
@@ -246,7 +238,6 @@
     font-size: 0.9rem;
 }
 
-/* Management Sections */
 .management-section {
     margin-bottom: 3rem;
 }
@@ -258,7 +249,6 @@
     margin-bottom: 1.5rem;
 }
 
-/* Forms */
 .product-form {
     background: #111827;
     padding: 2rem;
@@ -317,7 +307,6 @@
     box-shadow: 0 5px 15px rgba(14, 165, 233, 0.4);
 }
 
-/* Tables */
 .table-container {
     background: #111827;
     border-radius: 10px;
@@ -349,7 +338,6 @@
     background: #1a2435;
 }
 
-/* Status Badges */
 .status-badge {
     padding: 4px 12px;
     border-radius: 15px;
@@ -372,7 +360,6 @@
     color: white;
 }
 
-/* Buttons */
 .btn-delete {
     background: #ef4444;
     color: white;
@@ -396,7 +383,6 @@
     padding: 2rem;
 }
 
-/* Responsive */
 @media (max-width: 768px) {
     .stats-grid {
         grid-template-columns: 1fr;

@@ -3,6 +3,10 @@ from auth.accounts import current_user, accounts
 from . import dashboard_bp
 from .orders import cart, orders, all_products, products_dict, CATEGORIES, BRANDS
 from .products import SportShoe, FormalShoe, CasualShoe
+from datetime import datetime
+
+product_notifications = []
+notification_id_counter = 0
 
 
 @dashboard_bp.route('/dashboard')
@@ -11,7 +15,6 @@ def dashboard():
         flash('Моля, влезте в системата, за да видите дашборда.', 'warning')
         return redirect(url_for('auth.login'))
 
-    # Вземи параметрите за филтриране
     search_term = request.args.get('search', '')
     category_filter = request.args.get('category', '')
     subcategory_filter = request.args.get('subcategory', '')
@@ -19,26 +22,20 @@ def dashboard():
     min_price = request.args.get('min_price', '')
     max_price = request.args.get('max_price', '')
 
-    # Филтрирай продуктите
     filtered_products = {}
     for product_id, product in products_dict.items():
-        # Търсене
         if search_term and not product.matches_search(search_term):
             continue
 
-        # Филтър по категория
         if category_filter and product.category != category_filter:
             continue
 
-        # Филтър по подкатегория
         if subcategory_filter and product.subcategory != subcategory_filter:
             continue
 
-        # Филтър по марка
         if brand_filter and product.brand != brand_filter:
             continue
 
-        # Филтър по цена
         if min_price:
             try:
                 if product.price < float(min_price):
@@ -73,6 +70,9 @@ def dashboard():
     }
 
     current_user.username = session['username']
+
+    unread_notifications = get_unread_notifications()
+
     return render_template('dashboard/dashboard.html',
                            current_user=current_user,
                            products_dict=filtered_products,
@@ -84,16 +84,31 @@ def dashboard():
                            subcategory_filter=subcategory_filter,
                            brand_filter=brand_filter,
                            min_price=min_price,
-                           max_price=max_price)
+                           max_price=max_price,
+                           unread_notifications=unread_notifications)
+
 
 @dashboard_bp.route('/dashboard/cart')
 def cart_page():
     cart_items = session.get('cart', [])
+
+    valid_cart_items = []
+    for product_id in cart_items:
+        if product_id in products_dict:
+            valid_cart_items.append(product_id)
+
+    if len(valid_cart_items) != len(cart_items):
+        session['cart'] = valid_cart_items
+        session.modified = True
+
+    unread_notifications = get_unread_notifications()
+
     return render_template(
         "dashboard/cart.html",
         current_user=current_user,
-        cart_items=cart_items,
-        products_dict=products_dict
+        cart_items=valid_cart_items,
+        products_dict=products_dict,
+        unread_notifications=unread_notifications
     )
 
 
@@ -108,7 +123,6 @@ def add_to_cart():
     if 'cart' not in session:
         session['cart'] = []
 
-    # Проверка дали продукта съществува и има наличност
     if product_id in products_dict:
         product = products_dict[product_id]
         if product.in_stock > 0:
@@ -123,6 +137,16 @@ def add_to_cart():
     return redirect(url_for('dashboard.dashboard'))
 
 
+@dashboard_bp.route('/clear_cart')
+def clear_cart():
+    """Временна функция за изчистване на количката от стари данни"""
+    if 'cart' in session:
+        session['cart'] = []
+        session.modified = True
+        flash('Количката е изчистена!', 'success')
+    return redirect(url_for('dashboard.cart_page'))
+
+
 @dashboard_bp.route('/admin')
 def admin():
     if 'username' not in session:
@@ -134,7 +158,7 @@ def admin():
         return redirect(url_for('dashboard.dashboard'))
 
     users_count = len(accounts)
-    products_count = len(admin_products)
+    products_count = len(all_products)
     orders_count = len(orders)
 
     total_revenue = sum(order.get('total', 0) for order in orders)
@@ -149,7 +173,7 @@ def admin():
         total_revenue=total_revenue,
         users=accounts,
         orders=orders,
-        products=admin_products  # Сега това са обекти от класовете
+        products=all_products
     )
 
 
@@ -164,21 +188,19 @@ def add_product():
     price = float(request.form.get('price'))
     stock = int(request.form.get('stock'))
 
-
-
     if category == "Спортни":
         new_product = SportShoe(name, price, stock)
     elif category == "Елегантни":
         new_product = FormalShoe(name, price, stock)
-    else:  # Всекидневни
+    else:
         new_product = CasualShoe(name, price, stock)
 
-    # Генерираме уникален ID
-    product_id = name.lower().replace(' ', '_')
+    product_id = name.lower().replace(' ', '_') + f"_{len(products_dict)}"
 
-    # Добавяме в списъците
-    admin_products.append(new_product)
+    all_products.append(new_product)
     products_dict[product_id] = new_product
+
+    add_product_notification(name, category, price)
 
     flash(f'Продукт "{name}" е добавен успешно!', 'success')
     return redirect(url_for('dashboard.admin'))
@@ -206,12 +228,10 @@ def delete_user(username):
         flash('Нямате права за тази операция.', 'error')
         return redirect(url_for('dashboard.dashboard'))
 
-    # Не позволявай изтриване на администратора
     if username == 'admin':
         flash('Не можете да изтриете администраторския акаунт.', 'error')
         return redirect(url_for('dashboard.admin'))
 
-    # Изтриване на потребителя от accounts списъка
     global accounts
     accounts = [user for user in accounts if user[0] != username]
 
@@ -233,3 +253,79 @@ def delete_order(order_id):
         flash('Поръчката не е намерена.', 'error')
 
     return redirect(url_for('dashboard.admin'))
+
+
+@dashboard_bp.route('/mark_notification_read/<int:notification_id>')
+def mark_notification_read(notification_id):
+    if 'username' not in session:
+        return redirect(url_for('auth.login'))
+
+    mark_notification_as_read(notification_id)
+    return redirect(request.referrer or url_for('dashboard.dashboard'))
+
+
+@dashboard_bp.route('/mark_all_notifications_read')
+def mark_all_notifications_read():
+    """Маркира всички нотификации като прочетени"""
+    if 'username' not in session:
+        return redirect(url_for('auth.login'))
+
+    mark_all_notifications_as_read()
+    flash('Всички нотификации са маркирани като прочетени!', 'success')
+    return redirect(request.referrer or url_for('dashboard.dashboard'))
+
+
+def add_product_notification(product_name, category, price):
+    global notification_id_counter, product_notifications
+
+    notification_id_counter += 1
+    notification = {
+        'id': notification_id_counter,
+        'type': 'new_product',
+        'product_name': product_name,
+        'category': category,
+        'price': price,
+        'timestamp': datetime.now(),
+        'read_by': set()
+    }
+
+    product_notifications.append(notification)
+
+    if len(product_notifications) > 20:
+        product_notifications = product_notifications[-20:]
+
+
+def get_unread_notifications():
+    if 'username' not in session:
+        return []
+
+    username = session['username']
+    unread = []
+
+    for notification in reversed(product_notifications):
+        if username not in notification['read_by']:
+            unread.append(notification)
+
+    return unread
+
+
+def mark_notification_as_read(notification_id):
+    if 'username' not in session:
+        return
+
+    username = session['username']
+
+    for notification in product_notifications:
+        if notification['id'] == notification_id:
+            notification['read_by'].add(username)
+            break
+
+
+def mark_all_notifications_as_read():
+    if 'username' not in session:
+        return
+
+    username = session['username']
+
+    for notification in product_notifications:
+        notification['read_by'].add(username)
