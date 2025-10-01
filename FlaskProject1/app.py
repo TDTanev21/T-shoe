@@ -1,8 +1,7 @@
 import os
-
 from flask import Flask
 from flask_login import LoginManager
-from auth.accounts import current_user
+from models.user import current_user
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'VERYSECRETKEY'
@@ -13,14 +12,14 @@ login_manager.init_app(app)
 
 @login_manager.user_loader
 def load_user(user_id):
-    for user in current_user.accounts:
-        if user.username == user_id:
-            return user
+    for username, password in current_user.accounts:
+        if username == user_id:
+            return current_user
     return None
 
-from main import main_bp
-from auth import auth_bp
-from dashboard import dashboard_bp
+from controllers.main_controller import main_bp
+from controllers.auth_controller import auth_bp
+from controllers.dashboard_controller import dashboard_bp
 
 app.register_blueprint(main_bp)
 app.register_blueprint(auth_bp, url_prefix='/auth')
