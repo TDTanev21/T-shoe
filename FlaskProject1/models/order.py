@@ -1,6 +1,6 @@
 from models.product import SportShoe, FormalShoe, CasualShoe
-from datetime import datetime
 
+# Инициализация на продукти
 sport_shoe1 = SportShoe("Air Force 1", 199.99, 15, "Баскетбол", "Nike", "Бял", "42")
 sport_shoe2 = SportShoe("Ultraboost", 229.99, 8, "Бягане", "Adidas", "Черен", "43")
 sport_shoe3 = SportShoe("RS-X", 159.99, 12, "Тренировка", "Puma", "Син", "41")
@@ -47,6 +47,3 @@ orders = [
 ]
 
 cart = []
-
-product_notifications = []
-notification_id_counter = 0

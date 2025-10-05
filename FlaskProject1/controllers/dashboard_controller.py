@@ -2,13 +2,10 @@ from flask import Blueprint, render_template, session, redirect, url_for, flash,
 from models.user import current_user, accounts
 from models.order import products_dict, all_products, orders, CATEGORIES, BRANDS
 from services.product_service import get_filtered_products, add_new_product
-from services.notification_service import (
-    add_product_notification, get_unread_notifications,
-    mark_notification_as_read, mark_all_notifications_as_read
-)
 
 dashboard_bp = Blueprint('dashboard', __name__)
 
+# Product images mapping
 PRODUCT_IMAGES = {
     'nike_air_force_1_0': 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=400&h=300&fit=crop',
     'adidas_ultraboost_1': 'https://images.unsplash.com/photo-1606107557195-0e29a4b5b4aa?w=400&h=300&fit=crop',
@@ -33,6 +30,7 @@ def dashboard():
         flash('Моля, влезте в системата, за да видите дашборда.', 'warning')
         return redirect(url_for('auth.login'))
 
+    # Get filter parameters
     search_term = request.args.get('search', '')
     category_filter = request.args.get('category', '')
     subcategory_filter = request.args.get('subcategory', '')
@@ -40,13 +38,13 @@ def dashboard():
     min_price = request.args.get('min_price', '')
     max_price = request.args.get('max_price', '')
 
+    # Filter products
     filtered_products = get_filtered_products(
         search_term, category_filter, subcategory_filter,
         brand_filter, min_price, max_price
     )
 
     current_user.username = session['username']
-    unread_notifications = get_unread_notifications(session.get('username'))
 
     return render_template('dashboard/dashboard.html',
                            current_user=current_user,
@@ -59,8 +57,7 @@ def dashboard():
                            subcategory_filter=subcategory_filter,
                            brand_filter=brand_filter,
                            min_price=min_price,
-                           max_price=max_price,
-                           unread_notifications=unread_notifications)
+                           max_price=max_price)
 
 
 @dashboard_bp.route('/dashboard/cart')
@@ -71,6 +68,7 @@ def cart_page():
 
     cart_items = session.get('cart', [])
 
+    # Validate cart items
     valid_cart_items = []
     for product_id in cart_items:
         if product_id in products_dict:
@@ -80,14 +78,11 @@ def cart_page():
         session['cart'] = valid_cart_items
         session.modified = True
 
-    unread_notifications = get_unread_notifications(session.get('username'))
-
     return render_template(
         "dashboard/cart.html",
         current_user=current_user,
         cart_items=valid_cart_items,
-        products_dict=products_dict,
-        unread_notifications=unread_notifications
+        products_dict=products_dict
     )
 
 
@@ -118,6 +113,7 @@ def add_to_cart():
 
 @dashboard_bp.route('/clear_cart')
 def clear_cart():
+    """Временна функция за изчистване на количката от стари данни"""
     if 'cart' in session:
         session['cart'] = []
         session.modified = True
@@ -168,7 +164,6 @@ def add_product():
 
     try:
         product_id = add_new_product(name, category, price, stock)
-        add_product_notification(name, category, price)
         flash(f'Продукт "{name}" е добавен успешно!', 'success')
     except Exception as e:
         flash(f'Грешка при добавяне на продукт: {str(e)}', 'error')
@@ -221,22 +216,3 @@ def delete_order(order_id):
         flash('Поръчката не е намерена.', 'error')
 
     return redirect(url_for('dashboard.admin'))
-
-
-@dashboard_bp.route('/mark_notification_read/<int:notification_id>')
-def mark_notification_read(notification_id):
-    if 'username' not in session:
-        return redirect(url_for('auth.login'))
-
-    mark_notification_as_read(notification_id, session['username'])
-    return redirect(request.referrer or url_for('dashboard.dashboard'))
-
-
-@dashboard_bp.route('/mark_all_notifications_read')
-def mark_all_notifications_read():
-    if 'username' not in session:
-        return redirect(url_for('auth.login'))
-
-    mark_all_notifications_as_read(session['username'])
-    flash('Всички нотификации са маркирани като прочетени!', 'success')
-    return redirect(request.referrer or url_for('dashboard.dashboard'))
