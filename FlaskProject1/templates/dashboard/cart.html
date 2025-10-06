@@ -111,13 +111,12 @@
                 <span class="summary-value total-price">{{ "%.2f"|format(total_price.value + 5) }} лв</span>
             </div>
 
-            <button class="checkout-btn" onclick="checkout()">
+        <form action="{{ url_for('dashboard.checkout') }}" method="POST">
+            <button type="submit" class="checkout-btn" >
                 Продължи към плащане
             </button>
+        </form>
 
-            <p style="text-align: center; margin-top: 1rem; color: #6b7280; font-size: 0.8rem;">
-                * Това е демо версия. Функционалността за плащане не е реализирана.
-            </p>
         </div>
         {% endif %}
     </div>
@@ -440,7 +439,7 @@
 
 <script>
     function checkout() {
-        alert('Функционалността за плащане все още не е реализирана. Това е демо версия.');
+        alert('Успешно закупихте този продукт');
     }
 
     setTimeout(function() {

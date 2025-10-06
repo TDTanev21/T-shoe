@@ -103,7 +103,7 @@
         {% for product_id, product in products_dict.items() %}
         <div class="product-card">
             <div class="product-image">
-                <img src="{{ product_images.get(product_id, 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=400&h=300&fit=crop') }}"
+                <img src="{{ product_images.get(product_id, '') }}"
                      alt="{{ product.name }}">
                 <div class="product-overlay">
                     <form action="{{ url_for('dashboard.add_to_cart') }}" method="POST">

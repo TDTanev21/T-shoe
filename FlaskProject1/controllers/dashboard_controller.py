@@ -1,11 +1,12 @@
 from flask import Blueprint, render_template, session, redirect, url_for, flash, request
+from flask_login import login_required
+
 from models.user import current_user, accounts
 from models.order import products_dict, all_products, orders, CATEGORIES, BRANDS
 from services.product_service import get_filtered_products, add_new_product
 
 dashboard_bp = Blueprint('dashboard', __name__)
 
-# Product images mapping
 PRODUCT_IMAGES = {
     'nike_air_force_1_0': 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=400&h=300&fit=crop',
     'adidas_ultraboost_1': 'https://images.unsplash.com/photo-1606107557195-0e29a4b5b4aa?w=400&h=300&fit=crop',
@@ -23,22 +24,23 @@ PRODUCT_IMAGES = {
     'clarks_desert_boot_13': 'https://images.unsplash.com/photo-1525966222134-fcfa99b8ae77?w=400&h=300&fit=crop'
 }
 
-
+@dashboard_bp.route('/checkout', methods=['POST'])
+def checkout():
+    session['cart'] = []
+    flash('Поръчката е успешно направена!', 'success')
+    return redirect(url_for('dashboard.cart_page'))
 @dashboard_bp.route('/dashboard')
 def dashboard():
     if 'username' not in session:
         flash('Моля, влезте в системата, за да видите дашборда.', 'warning')
         return redirect(url_for('auth.login'))
 
-    # Get filter parameters
     search_term = request.args.get('search', '')
     category_filter = request.args.get('category', '')
     subcategory_filter = request.args.get('subcategory', '')
     brand_filter = request.args.get('brand', '')
     min_price = request.args.get('min_price', '')
     max_price = request.args.get('max_price', '')
-
-    # Filter products
     filtered_products = get_filtered_products(
         search_term, category_filter, subcategory_filter,
         brand_filter, min_price, max_price
@@ -68,7 +70,6 @@ def cart_page():
 
     cart_items = session.get('cart', [])
 
-    # Validate cart items
     valid_cart_items = []
     for product_id in cart_items:
         if product_id in products_dict:
