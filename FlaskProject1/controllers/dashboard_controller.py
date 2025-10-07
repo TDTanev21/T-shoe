@@ -23,16 +23,15 @@ PRODUCT_IMAGES = {
     'adidas_predator': 'adidas_predator.jpg',
     'nike_air_max': 'air_max.jpg',
     'clarks_oxford': 'clarks_oxford.jpg',
-    'hugo_boss_boss_classic': 'https://images.unsplash.com/photo-1614252235316-8c857d38b5f4?w=400&h=300&fit=crop',
-    'geox_derby': 'https://images.unsplash.com/photo-1531315630201-bb15abeb1653?w=400&h=300&fit=crop',
-    'salvatore_monk_strap': 'https://images.unsplash.com/photo-1449505278894-297fdb3edbc1?w=400&h=300&fit=crop',
-    'adidas_superstar': 'https://images.unsplash.com/photo-1587563871167-1ee9c731aefb?w=400&h=300&fit=crop',
-    'new_balance_574': 'https://images.unsplash.com/photo-1600185365483-26d7a4cc7519?w=400&h=300&fit=crop',
-    'vans_old_skool': 'https://images.unsplash.com/photo-1549298916-b41d501d3772?w=400&h=300&fit=crop',
-    'converse_chuck_70': 'https://images.unsplash.com/photo-1449505278894-297fdb3edbc1?w=400&h=300&fit=crop',
-    'clarks_desert_boot': 'https://images.unsplash.com/photo-1525966222134-fcfa99b8ae77?w=400&h=300&fit=crop'
+    'hugo_boss_boss_classic': 'default.png',
+    'geox_derby': 'default.png',
+    'salvatore_monk_strap': 'default.png',
+    'adidas_superstar': 'default.png',
+    'new_balance_574': 'default.png',
+    'vans_old_skool': 'default.png',
+    'converse_chuck_70': 'default.png',
+    'clarks_desert_boot': 'default.png'
 }
-
 
 @dashboard_bp.route('/checkout', methods=['POST'])
 @login_required
