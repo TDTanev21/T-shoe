@@ -85,12 +85,23 @@
                    id="profileMenu" data-bs-toggle="dropdown" aria-expanded="false">
                     <span class="ms-2">{{ current_user.username }}</span>
                 </a>
+                 {% if current_user.is_admin %}
+                         <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="profileMenu">
+
+                    <li><a class="dropdown-item" href="{{ url_for('dashboard.admin') }}">Дашборд 👤</a></li>
+                    <li><a class="dropdown-item" href="">Настройки ⚙</a></li>
+                    <li><hr class="dropdown-divider"></li>
+                    <li><a class="dropdown-item" href="{{ url_for('auth.logout') }}">Излез</a></li>
+                </ul>
+                    {% else %}
                 <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="profileMenu">
+
                     <li><a class="dropdown-item" href="{{ url_for('dashboard.cart_page') }}">Количка 🛒</a></li>
                     <li><a class="dropdown-item" href="">Настройки ⚙</a></li>
                     <li><hr class="dropdown-divider"></li>
                     <li><a class="dropdown-item" href="{{ url_for('auth.logout') }}">Излез</a></li>
                 </ul>
+                     {% endif %}
             </div>
             {% else %}
             <a class="btn btn-primary btn-lg" href="{{ url_for('auth.login') }}">Login</a>

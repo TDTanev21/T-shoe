@@ -1,12 +1,19 @@
-from flask import Blueprint, render_template, redirect, url_for, flash, request, session
-from models.user import current_user, accounts
-from services.auth_service import register_user, login_user, logout_user
-from models.forms import LoginForm,RegistrationForm
+from flask import Blueprint, render_template, redirect, url_for, flash, request
+from flask_login import login_required, current_user
+from models.forms import LoginForm, RegistrationForm
+from services.auth_service import register_user, login_user_service, logout_user_service
+
 auth_bp = Blueprint('auth', __name__)
 
 
 @auth_bp.route('/register', methods=['GET', 'POST'])
 def register():
+    # Ако потребителят вече е логнат, пренасочваме
+    if current_user.is_authenticated:
+        if current_user.is_admin:
+            return redirect(url_for('dashboard.admin'))
+        else:
+            return redirect(url_for('dashboard.dashboard'))
 
     form = RegistrationForm()
 
@@ -15,6 +22,7 @@ def register():
         password = form.password.data
         confirm_password = form.confirm_password.data
 
+        # Регистриране на потребителя
         success, message = register_user(username, password, confirm_password)
         flash(message, 'success' if success else 'danger')
 
@@ -26,6 +34,13 @@ def register():
 
 @auth_bp.route('/login', methods=['GET', 'POST'])
 def login():
+    # Ако потребителят вече е логнат, пренасочваме
+    if current_user.is_authenticated:
+        flash('Вече сте влезли в системата!', 'info')
+        if current_user.is_admin:
+            return redirect(url_for('dashboard.admin'))
+        else:
+            return redirect(url_for('dashboard.dashboard'))
 
     form = LoginForm()
 
@@ -33,7 +48,13 @@ def login():
         username = form.username.data
         password = form.password.data
 
-        success, message, redirect_url = login_user(username, password, session)
+        print(f"Login attempt - Username: {username}")
+
+        # Вход на потребителя
+        success, message, redirect_url = login_user_service(username, password)
+
+        print(f"Login result - Success: {success}, Message: {message}")
+
         flash(message, 'success' if success else 'danger')
 
         if success:
@@ -43,7 +64,9 @@ def login():
 
 
 @auth_bp.route('/logout')
+@login_required
 def logout():
-    logout_user(session)
-    flash('Успешно излязохте от системата.', 'info')
+    # Изход на потребителя
+    success, message = logout_user_service()
+    flash(message, 'info')
     return redirect(url_for('main_bp.index'))

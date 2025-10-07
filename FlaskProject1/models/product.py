@@ -1,29 +1,24 @@
-class Shoe:
-    def __init__(self, name, price, in_stock, category, subcategory="Общи", brand="Други", color="Черен", size="42"):
-        self.name = name
-        self.__price = price
-        self.in_stock = in_stock
-        self.category = category
-        self.subcategory = subcategory
-        self.brand = brand
-        self.color = color
-        self.size = size
+from . import db
 
-    @property
-    def price(self):
-        return self.__price
 
-    @price.setter
-    def price(self, new_price):
-        if new_price < 0:
-            raise ValueError('Price cannot be negative')
-        self.__price = new_price
+class Shoe(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(100), nullable=False)
+    price = db.Column(db.Float, nullable=False)
+    in_stock = db.Column(db.Integer, nullable=False)
+    category = db.Column(db.String(50), nullable=False)
+    subcategory = db.Column(db.String(50), default="Общи")
+    brand = db.Column(db.String(50), default="Други")
+    color = db.Column(db.String(30), default="Черен")
+    size = db.Column(db.String(10), default="42")
+    shoe_type = db.Column(db.String(20))
+    __mapper_args__ = {
+        'polymorphic_identity': 'shoe',
+        'polymorphic_on': shoe_type
+    }
 
     def get_info(self):
         return f"{self.brand} {self.name} - {self.color} - Размер: {self.size}"
-
-    def update_stock(self, quantity):
-        self.in_stock += quantity
 
     def matches_search(self, search_term):
         search_term = search_term.lower()
@@ -32,23 +27,35 @@ class Shoe:
                 search_term in self.category.lower() or
                 search_term in self.subcategory.lower())
 
+
 class SportShoe(Shoe):
-    def __init__(self, name, price, in_stock, subcategory="Тениски", brand="Nike", color="Бял", size="42"):
-        super().__init__(name, price, in_stock, "Спортни", subcategory, brand, color, size)
+    id = db.Column(db.Integer, db.ForeignKey('shoe.id'), primary_key=True)
+
+    __mapper_args__ = {
+        'polymorphic_identity': 'sport_shoe',
+    }
 
     def get_info(self):
         return f"{self.subcategory}: {super().get_info()}"
+
 
 class FormalShoe(Shoe):
-    def __init__(self, name, price, in_stock, subcategory="Оксфорди", brand="Clarks", color="Черен", size="42"):
-        super().__init__(name, price, in_stock, "Елегантни", subcategory, brand, color, size)
+    id = db.Column(db.Integer, db.ForeignKey('shoe.id'), primary_key=True)
+
+    __mapper_args__ = {
+        'polymorphic_identity': 'formal_shoe',
+    }
 
     def get_info(self):
         return f"{self.subcategory}: {super().get_info()}"
 
+
 class CasualShoe(Shoe):
-    def __init__(self, name, price, in_stock, subcategory="Кецове", brand="Adidas", color="Син", size="42"):
-        super().__init__(name, price, in_stock, "Всекидневни", subcategory, brand, color, size)
+    id = db.Column(db.Integer, db.ForeignKey('shoe.id'), primary_key=True)
+
+    __mapper_args__ = {
+        'polymorphic_identity': 'casual_shoe',
+    }
 
     def get_info(self):
         return f"{self.subcategory}: {super().get_info()}"

@@ -5,6 +5,10 @@ from models import db, login_manager
 app = Flask(__name__)
 app.config.from_object(Config)
 
+# Важни настройки за Flask-Login
+app.config['REMEMBER_COOKIE_DURATION'] = 3600  # 1 час
+app.config['SESSION_PROTECTION'] = 'strong'
+
 # Initialize extensions
 db.init_app(app)
 login_manager.init_app(app)

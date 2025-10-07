@@ -26,11 +26,20 @@
         </p>
 
         {% if current_user.is_authenticated %}
-            <a href="{{ url_for('dashboard.dashboard') }}"
+            {% if current_user.is_admin %}
+            <a href="{{ url_for('dashboard.admin') }}"
                class="cta-button inline-block bg-cyan-500 text-white px-10 py-4 rounded-full font-bold text-lg shadow-lg
                       hover:bg-cyan-400 hover:scale-105 transition-all transform duration-300 animate-button">
                 Отиди към твоя Dashboard
             </a>
+                {% else %}
+                 <a href="{{ url_for('dashboard.dashboard') }}"
+               class="cta-button inline-block bg-cyan-500 text-white px-10 py-4 rounded-full font-bold text-lg shadow-lg
+                      hover:bg-cyan-400 hover:scale-105 transition-all transform duration-300 animate-button">
+                Отиди към твоя Dashboard
+            </a>
+                {% endif %}
+
         {% else %}
             <a href="{{ url_for('auth.register') }}"
                class="cta-button inline-block bg-cyan-500 text-white px-10 py-4 rounded-full font-bold text-lg shadow-lg

@@ -1,53 +1,90 @@
 from flask import Blueprint, render_template, session, redirect, url_for, flash, request
-from flask_login import login_required
-
-from models.user import current_user, accounts
-from models.order import products_dict, all_products, orders, CATEGORIES, BRANDS
+from flask_login import login_required, current_user
+from models.product import Shoe
+from models.user import User
+from models.order import Order, OrderItem
+from models import db
 from services.product_service import get_filtered_products, add_new_product
 
 dashboard_bp = Blueprint('dashboard', __name__)
 
-
-PRODUCT_IMAGES = {
-    'nike_air_force_1_0': 'air_force_1.jpg',
-    'adidas_ultraboost_1': 'adidas_ultraboost_1.jpg',
-    'puma_rs-x_2': 'puma_rs_x.jpg',
-    'adidas_predator_3': 'adidas_predator.jpg',
-    'nike_air_max_4': 'air_max.jpg',
-    'clarks_oxford_5': 'clarks_oxford.jpg',
-    'hugo_boss_boss_classic_6': 'https://images.unsplash.com/photo-1614252235316-8c857d38b5f4?w=400&h=300&fit=crop',
-    'geox_derby_7': 'https://images.unsplash.com/photo-1531315630201-bb15abeb1653?w=400&h=300&fit=crop',
-    'salvatore_monk_strap_8': 'https://images.unsplash.com/photo-1449505278894-297fdb3edbc1?w=400&h=300&fit=crop',
-    'adidas_superstar_9': 'https://images.unsplash.com/photo-1587563871167-1ee9c731aefb?w=400&h=300&fit=crop',
-    'new_balance_574_10': 'https://images.unsplash.com/photo-1600185365483-26d7a4cc7519?w=400&h=300&fit=crop',
-    'vans_old_skool_11': 'https://images.unsplash.com/photo-1549298916-b41d501d3772?w=400&h=300&fit=crop',
-    'converse_chuck_70_12': 'https://images.unsplash.com/photo-1449505278894-297fdb3edbc1?w=400&h=300&fit=crop',
-    'clarks_desert_boot_13': 'https://images.unsplash.com/photo-1525966222134-fcfa99b8ae77?w=400&h=300&fit=crop'
+CATEGORIES = {
+    "Спортни": ["Бягане", "Баскетбол", "Футбол", "Тенис", "Тренировка", "Волейбол"],
+    "Елегантни": ["Оксфорди", "Дърбита", "Лофери", "Монкстрапове", "Брогове"],
+    "Всекидневни": ["Кецове", "Мокасини", "Ботуши", "Сандали", "Еспадрили"]
 }
 
-@dashboard_bp.route('/checkout', methods=['POST'])
-def checkout():
-    session['cart'] = []
-    flash('Поръчката е успешно направена!', 'success')
-    return redirect(url_for('dashboard.cart_page'))
-@dashboard_bp.route('/dashboard')
-def dashboard():
-    if 'username' not in session:
-        flash('Моля, влезте в системата, за да видите дашборда.', 'warning')
-        return redirect(url_for('auth.login'))
+BRANDS = ["Nike", "Adidas", "Puma", "New Balance", "Vans", "Converse", "Clarks", "Hugo Boss", "Geox", "Salvatore"]
 
+PRODUCT_IMAGES = {
+    'nike_air_force_1': 'air_force_1.jpg',
+    'adidas_ultraboost': 'adidas_ultraboost_1.jpg',
+    'puma_rs-x': 'puma_rs_x.jpg',
+    'adidas_predator': 'adidas_predator.jpg',
+    'nike_air_max': 'air_max.jpg',
+    'clarks_oxford': 'clarks_oxford.jpg',
+    'hugo_boss_boss_classic': 'https://images.unsplash.com/photo-1614252235316-8c857d38b5f4?w=400&h=300&fit=crop',
+    'geox_derby': 'https://images.unsplash.com/photo-1531315630201-bb15abeb1653?w=400&h=300&fit=crop',
+    'salvatore_monk_strap': 'https://images.unsplash.com/photo-1449505278894-297fdb3edbc1?w=400&h=300&fit=crop',
+    'adidas_superstar': 'https://images.unsplash.com/photo-1587563871167-1ee9c731aefb?w=400&h=300&fit=crop',
+    'new_balance_574': 'https://images.unsplash.com/photo-1600185365483-26d7a4cc7519?w=400&h=300&fit=crop',
+    'vans_old_skool': 'https://images.unsplash.com/photo-1549298916-b41d501d3772?w=400&h=300&fit=crop',
+    'converse_chuck_70': 'https://images.unsplash.com/photo-1449505278894-297fdb3edbc1?w=400&h=300&fit=crop',
+    'clarks_desert_boot': 'https://images.unsplash.com/photo-1525966222134-fcfa99b8ae77?w=400&h=300&fit=crop'
+}
+
+
+@dashboard_bp.route('/checkout', methods=['POST'])
+@login_required
+def checkout():
+    cart_items = session.get('cart', [])
+    if cart_items:
+        total = 0
+        order = Order(user_id=current_user.id, total=0, status='обработва се')
+        db.session.add(order)
+        db.session.flush()
+
+        for product_id in cart_items:
+            try:
+                product_db_id = int(product_id.split('_')[-1])
+                product = Shoe.query.get(product_db_id)
+                if product and product.in_stock > 0:
+                    order_item = OrderItem(
+                        order_id=order.id,
+                        product_id=product.id,
+                        quantity=1,
+                        price=product.price
+                    )
+                    total += product.price
+                    product.in_stock -= 1
+                    db.session.add(order_item)
+            except (ValueError, IndexError):
+                continue
+
+        order.total = total
+        db.session.commit()
+        flash(f'Поръчка #{order.id} е успешно направена!', 'success')
+    else:
+        flash('Количката ви е празна!', 'warning')
+
+    session['cart'] = []
+    return redirect(url_for('dashboard.cart_page'))
+
+
+@dashboard_bp.route('/dashboard')
+@login_required
+def dashboard():
     search_term = request.args.get('search', '')
     category_filter = request.args.get('category', '')
     subcategory_filter = request.args.get('subcategory', '')
     brand_filter = request.args.get('brand', '')
     min_price = request.args.get('min_price', '')
     max_price = request.args.get('max_price', '')
+
     filtered_products = get_filtered_products(
         search_term, category_filter, subcategory_filter,
         brand_filter, min_price, max_price
     )
-
-    current_user.username = session['username']
 
     return render_template('dashboard/dashboard.html',
                            current_user=current_user,
@@ -64,21 +101,33 @@ def dashboard():
 
 
 @dashboard_bp.route('/dashboard/cart')
+@login_required
 def cart_page():
-    if 'username' not in session:
-        flash('Моля, влезте в системата.', 'warning')
-        return redirect(url_for('auth.login'))
-
     cart_items = session.get('cart', [])
 
     valid_cart_items = []
     for product_id in cart_items:
-        if product_id in products_dict:
-            valid_cart_items.append(product_id)
+        try:
+            product_db_id = int(product_id.split('_')[-1])
+            product = Shoe.query.get(product_db_id)
+            if product and product.in_stock > 0:
+                valid_cart_items.append(product_id)
+        except (ValueError, IndexError):
+            continue
 
     if len(valid_cart_items) != len(cart_items):
         session['cart'] = valid_cart_items
         session.modified = True
+
+    products_dict = {}
+    for product_id in valid_cart_items:
+        try:
+            product_db_id = int(product_id.split('_')[-1])
+            product = Shoe.query.get(product_db_id)
+            if product:
+                products_dict[product_id] = product
+        except (ValueError, IndexError):
+            continue
 
     return render_template(
         "dashboard/cart.html",
@@ -89,31 +138,43 @@ def cart_page():
 
 
 @dashboard_bp.route('/add', methods=['POST'])
+@login_required
 def add_to_cart():
-    if 'username' not in session:
-        flash('Трябва да сте влезли в системата', 'warning')
-        return redirect(url_for('auth.login'))
-
     product_id = request.form.get('product_id')
+
+    if not product_id:
+        flash('Невалиден продукт!', 'error')
+        return redirect(url_for('dashboard.dashboard'))
+
+    try:
+        product_db_id = int(product_id.split('_')[-1])
+        product = Shoe.query.get(product_db_id)
+        if not product:
+            flash('Продуктът не е намерен!', 'error')
+            return redirect(url_for('dashboard.dashboard'))
+
+        if product.in_stock <= 0:
+            flash('Продуктът е изчерпан!', 'warning')
+            return redirect(url_for('dashboard.dashboard'))
+    except (ValueError, IndexError):
+        flash('Невалиден продукт!', 'error')
+        return redirect(url_for('dashboard.dashboard'))
 
     if 'cart' not in session:
         session['cart'] = []
 
-    if product_id in products_dict:
-        product = products_dict[product_id]
-        if product.in_stock > 0:
-            session['cart'].append(product_id)
-            session.modified = True
-            flash(f'{product.name} е добавен в количката!', 'success')
-        else:
-            flash('Продуктът е изчерпан!', 'warning')
+    if product_id not in session['cart']:
+        session['cart'].append(product_id)
+        session.modified = True
+        flash(f'{product.name} е добавен в количката!', 'success')
     else:
-        flash('Продуктът не е намерен!', 'error')
+        flash('Продуктът вече е в количката!', 'info')
 
     return redirect(url_for('dashboard.dashboard'))
 
 
 @dashboard_bp.route('/clear_cart')
+@login_required
 def clear_cart():
     if 'cart' in session:
         session['cart'] = []
@@ -123,21 +184,20 @@ def clear_cart():
 
 
 @dashboard_bp.route('/admin')
+@login_required
 def admin():
-    if 'username' not in session:
-        flash('Моля, влезте в системата.', 'warning')
-        return redirect(url_for('auth.login'))
-
-    if session['username'] != 'admin':
+    if not current_user.is_admin:
         flash('Нямате права за достъп до административния панел.', 'error')
         return redirect(url_for('dashboard.dashboard'))
 
-    users_count = len(accounts)
-    products_count = len(all_products)
-    orders_count = len(orders)
-    total_revenue = sum(order.get('total', 0) for order in orders)
+    users_count = User.query.count()
+    products_count = Shoe.query.count()
+    orders_count = Order.query.count()
+    total_revenue = db.session.query(db.func.sum(Order.total)).scalar() or 0
 
-    current_user.username = session['username']
+    users = User.query.all()
+    orders = Order.query.all()
+    products = Shoe.query.all()
 
     return render_template(
         'dashboard/admin.html',
@@ -146,22 +206,36 @@ def admin():
         products_count=products_count,
         orders_count=orders_count,
         total_revenue=total_revenue,
-        users=accounts,
+        users=users,
         orders=orders,
-        products=all_products
+        products=products
     )
 
 
 @dashboard_bp.route('/admin/add_product', methods=['POST'])
+@login_required
 def add_product():
-    if 'username' not in session or session['username'] != 'admin':
+    if not current_user.is_admin:
         flash('Нямате права за тази операция.', 'error')
         return redirect(url_for('dashboard.dashboard'))
 
     name = request.form.get('name')
     category = request.form.get('category')
-    price = float(request.form.get('price'))
-    stock = int(request.form.get('stock'))
+    price = request.form.get('price')
+    stock = request.form.get('stock')
+
+    if not all([name, category, price, stock]):
+        flash('Моля, попълнете всички полета.', 'error')
+        return redirect(url_for('dashboard.admin'))
+
+    try:
+        price = float(price)
+        stock = int(stock)
+        if price < 0 or stock < 0:
+            raise ValueError
+    except ValueError:
+        flash('Невалидни данни за цена или наличност.', 'error')
+        return redirect(url_for('dashboard.admin'))
 
     try:
         product_id = add_new_product(name, category, price, stock)
@@ -173,11 +247,8 @@ def add_product():
 
 
 @dashboard_bp.route('/remove_from_cart', methods=['POST'])
+@login_required
 def remove_from_cart():
-    if 'username' not in session:
-        flash('Трябва да сте влезли в системата', 'warning')
-        return redirect(url_for('auth.login'))
-
     product_id = request.form.get('product_id')
 
     if 'cart' in session and product_id in session['cart']:
@@ -188,32 +259,85 @@ def remove_from_cart():
     return redirect(url_for('dashboard.cart_page'))
 
 
-@dashboard_bp.route('/admin/delete_user/<username>')
-def delete_user(username):
-    if 'username' not in session or session['username'] != 'admin':
+@dashboard_bp.route('/admin/delete_user/<int:user_id>')
+@login_required
+def delete_user(user_id):
+    if not current_user.is_admin:
         flash('Нямате права за тази операция.', 'error')
         return redirect(url_for('dashboard.dashboard'))
 
-    if username == 'admin':
-        flash('Не можете да изтриете администраторския акаунт.', 'error')
+    user = User.query.get(user_id)
+    if not user:
+        flash('Потребителят не е намерен.', 'error')
         return redirect(url_for('dashboard.admin'))
 
-    global accounts
-    accounts = [user for user in accounts if user[0] != username]
-    flash(f'Потребител {username} е изтрит успешно!', 'success')
+    if user.id == current_user.id:
+        flash('Не можете да изтриете собствения си акаунт.', 'error')
+        return redirect(url_for('dashboard.admin'))
+
+    try:
+        Order.query.filter_by(user_id=user_id).delete()
+        db.session.delete(user)
+        db.session.commit()
+        flash(f'Потребител {user.username} е изтрит успешно!', 'success')
+    except Exception as e:
+        db.session.rollback()
+        flash(f'Грешка при изтриване на потребител: {str(e)}', 'error')
+
     return redirect(url_for('dashboard.admin'))
 
 
 @dashboard_bp.route('/admin/delete_order/<int:order_id>', methods=['POST'])
+@login_required
 def delete_order(order_id):
-    if 'username' not in session or session['username'] != 'admin':
+    if not current_user.is_admin:
         flash('Нямате права за тази операция.', 'error')
         return redirect(url_for('dashboard.dashboard'))
 
-    if 0 < order_id <= len(orders):
-        deleted_order = orders.pop(order_id - 1)
-        flash(f'Поръчка #{order_id} е изтрита успешно!', 'success')
-    else:
+    order = Order.query.get(order_id)
+    if not order:
         flash('Поръчката не е намерена.', 'error')
+        return redirect(url_for('dashboard.admin'))
+
+    try:
+        for item in order.items:
+            product = Shoe.query.get(item.product_id)
+            if product:
+                product.in_stock += item.quantity
+
+        db.session.delete(order)
+        db.session.commit()
+        flash(f'Поръчка #{order_id} е изтрита успешно!', 'success')
+    except Exception as e:
+        db.session.rollback()
+        flash(f'Грешка при изтриване на поръчка: {str(e)}', 'error')
+
+    return redirect(url_for('dashboard.admin'))
+
+
+@dashboard_bp.route('/admin/delete_product/<int:product_id>', methods=['POST'])
+@login_required
+def delete_product(product_id):
+    if not current_user.is_admin:
+        flash('Нямате права за тази операция.', 'error')
+        return redirect(url_for('dashboard.dashboard'))
+
+    product = Shoe.query.get(product_id)
+    if not product:
+        flash('Продуктът не е намерен.', 'error')
+        return redirect(url_for('dashboard.admin'))
+
+    try:
+        order_items = OrderItem.query.filter_by(product_id=product_id).first()
+        if order_items:
+            flash('Не можете да изтриете продукт, който е част от активни поръчки.', 'error')
+            return redirect(url_for('dashboard.admin'))
+
+        db.session.delete(product)
+        db.session.commit()
+        flash(f'Продукт "{product.name}" е изтрит успешно!', 'success')
+    except Exception as e:
+        db.session.rollback()
+        flash(f'Грешка при изтриване на продукт: {str(e)}', 'error')
 
     return redirect(url_for('dashboard.admin'))

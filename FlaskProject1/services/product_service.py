@@ -1,54 +1,67 @@
-from models.order import products_dict, all_products
-from models.product import SportShoe, FormalShoe, CasualShoe
+from models.product import Shoe, SportShoe, FormalShoe, CasualShoe
+from models import db
 
 
 def get_filtered_products(search_term="", category_filter="", subcategory_filter="",
                           brand_filter="", min_price="", max_price=""):
-    filtered_products = {}
+    query = Shoe.query
 
-    for product_id, product in products_dict.items():
-        if search_term and not product.matches_search(search_term):
-            continue
+    if search_term:
+        query = query.filter(
+            db.or_(
+                Shoe.name.ilike(f'%{search_term}%'),
+                Shoe.brand.ilike(f'%{search_term}%'),
+                Shoe.category.ilike(f'%{search_term}%'),
+                Shoe.subcategory.ilike(f'%{search_term}%')
+            )
+        )
 
-        if category_filter and product.category != category_filter:
-            continue
+    if category_filter:
+        query = query.filter(Shoe.category == category_filter)
 
-        if subcategory_filter and product.subcategory != subcategory_filter:
-            continue
+    if subcategory_filter:
+        query = query.filter(Shoe.subcategory == subcategory_filter)
 
-        if brand_filter and product.brand != brand_filter:
-            continue
+    if brand_filter:
+        query = query.filter(Shoe.brand == brand_filter)
 
-        if min_price:
-            try:
-                if product.price < float(min_price):
-                    continue
-            except ValueError:
-                pass
+    if min_price:
+        try:
+            query = query.filter(Shoe.price >= float(min_price))
+        except ValueError:
+            pass
 
-        if max_price:
-            try:
-                if product.price > float(max_price):
-                    continue
-            except ValueError:
-                pass
+    if max_price:
+        try:
+            query = query.filter(Shoe.price <= float(max_price))
+        except ValueError:
+            pass
 
-        filtered_products[product_id] = product
-
-    return filtered_products
+    return {f"{shoe.brand.lower()}_{shoe.name.lower().replace(' ', '_')}_{shoe.id}": shoe
+            for shoe in query.all()}
 
 
-def add_new_product(name, category, price, stock):
+def add_new_product(name, category, price, stock, subcategory="Общи", brand="Други", color="Черен", size="42"):
     if category == "Спортни":
-        new_product = SportShoe(name, price, stock)
+        new_product = SportShoe(
+            name=name, price=price, in_stock=stock,
+            category=category, subcategory=subcategory,
+            brand=brand, color=color, size=size
+        )
     elif category == "Елегантни":
-        new_product = FormalShoe(name, price, stock)
+        new_product = FormalShoe(
+            name=name, price=price, in_stock=stock,
+            category=category, subcategory=subcategory,
+            brand=brand, color=color, size=size
+        )
     else:
-        new_product = CasualShoe(name, price, stock)
+        new_product = CasualShoe(
+            name=name, price=price, in_stock=stock,
+            category=category, subcategory=subcategory,
+            brand=brand, color=color, size=size
+        )
 
-    product_id = name.lower().replace(' ', '_') + f"_{len(products_dict)}"
+    db.session.add(new_product)
+    db.session.commit()
 
-    all_products.append(new_product)
-    products_dict[product_id] = new_product
-
-    return product_id
+    return f"{new_product.brand.lower()}_{new_product.name.lower().replace(' ', '_')}_{new_product.id}"
