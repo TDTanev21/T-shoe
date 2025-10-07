@@ -23,14 +23,14 @@ PRODUCT_IMAGES = {
     'adidas_predator': 'adidas_predator.jpg',
     'nike_air_max': 'air_max.jpg',
     'clarks_oxford': 'clarks_oxford.jpg',
-    'hugo_boss_boss_classic': 'default.png',
-    'geox_derby': 'default.png',
-    'salvatore_monk_strap': 'default.png',
-    'adidas_superstar': 'default.png',
-    'new_balance_574': 'default.png',
-    'vans_old_skool': 'default.png',
-    'converse_chuck_70': 'default.png',
-    'clarks_desert_boot': 'default.png'
+    'hugo_boss_boss_classic': 'hugo_boss_boss_classic.jpg',
+    'geox_derby': 'geox_derby.jpg',
+    'salvatore_monk_strap': 'salvatore_monk_strap.jpg',
+    'adidas_superstar': 'adidas_superstar.jpg',
+    'new_balance_574': 'new_balance_574.jpg',
+    'vans_old_skool': 'vans_old_skool.jpg',
+    'converse_chuck_70': 'converse_chuck_70.jpg',
+    'clarks_desert_boot': 'clarks_desert_boot.jpg'
 }
 
 @dashboard_bp.route('/checkout', methods=['POST'])
