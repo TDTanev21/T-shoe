@@ -1,0 +1,281 @@
+{% extends "base.html" %}
+
+{% block title %}{{ product.brand }} {{ product.name }}{% endblock %}
+
+{% block content %}
+<div class="product-detail-container">
+    <div class="product-detail-header">
+        <a href="{{ url_for('dashboard.dashboard') }}" class="back-btn">← Назад към продуктите</a>
+        <h1 class="product-detail-title">{{ product.brand }} {{ product.name }}</h1>
+    </div>
+
+    <div class="product-detail-content">
+        <div class="product-detail-image">
+            <img src="{{ url_for('static', filename='images/' + product_image) }}"
+                 alt="{{ product.name }}"
+                 onerror="this.src='{{ url_for('static', filename='images/default.png') }}'">
+        </div>
+
+        <div class="product-detail-info">
+            <div class="product-meta">
+                <span class="product-category">{{ product.category }}</span>
+                <span class="product-subcategory">{{ product.subcategory }}</span>
+            </div>
+
+            <p class="product-description">{{ product.get_info() }}</p>
+
+            <div class="product-details-grid">
+                <div class="detail-item">
+                    <strong>Марка:</strong>
+                    <span>{{ product.brand }}</span>
+                </div>
+                <div class="detail-item">
+                    <strong>Цвят:</strong>
+                    <span>{{ product.color }}</span>
+                </div>
+                <div class="detail-item">
+                    <strong>Размер:</strong>
+                    <span>{{ product.size }}</span>
+                </div>
+                <div class="detail-item">
+                    <strong>Категория:</strong>
+                    <span>{{ product.category }}</span>
+                </div>
+                <div class="detail-item">
+                    <strong>Подкатегория:</strong>
+                    <span>{{ product.subcategory }}</span>
+                </div>
+            </div>
+
+            <div class="product-price-section">
+                <div class="product-price">{{ "%.2f"|format(product.price) }} лв</div>
+                <div class="product-stock {% if product.in_stock == 0 %}out-of-stock{% elif product.in_stock < 5 %}low-stock{% endif %}">
+                    Налични: {{ product.in_stock }} бр.
+                </div>
+            </div>
+
+            <form action="{{ url_for('dashboard.add_to_cart') }}" method="POST" class="add-to-cart-form">
+                <input type="hidden" name="product_id" value="{{ product_id }}">
+                <button type="submit" class="add-to-cart-btn-detail"
+                        {% if product.in_stock == 0 %}disabled{% endif %}>
+                    {% if product.in_stock == 0 %}
+                        🔴 Изчерпан
+                    {% else %}
+                        🛒 Добави в количката
+                    {% endif %}
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<style>
+ body {
+    font-family: 'Inter', sans-serif;
+    min-height: 100vh;
+    background: linear-gradient(135deg, #0a0a0f, #1f1f29, #0d0d13);
+    overflow-x: hidden;
+    color: white;
+}
+.product-detail-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem;
+    background: #000000;
+    min-height: 100vh;
+}
+
+.product-detail-header {
+    margin-bottom: 2rem;
+}
+
+.back-btn {
+    color: #0ea5e9;
+    text-decoration: none;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    display: inline-block;
+    transition: color 0.3s ease;
+}
+
+.back-btn:hover {
+    color: #38bdf8;
+}
+
+.product-detail-title {
+    font-size: 2.5rem;
+    font-weight: 800;
+    color: #ffffff;
+    margin-bottom: 1rem;
+    background: linear-gradient(135deg, #0ea5e9, #10b981);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.product-detail-content {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 3rem;
+    align-items: start;
+}
+
+.product-detail-image {
+    background: #111827;
+    border-radius: 15px;
+    padding: 2rem;
+    border: 1px solid #1f2937;
+}
+
+.product-detail-image img {
+    width: 100%;
+    height: auto;
+    border-radius: 10px;
+    object-fit: cover;
+}
+
+.product-detail-info {
+    background: #111827;
+    padding: 2rem;
+    border-radius: 15px;
+    border: 1px solid #1f2937;
+}
+
+.product-meta {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+    flex-wrap: wrap;
+}
+
+.product-category {
+    display: inline-block;
+    background: linear-gradient(135deg, #0ea5e9, #10b981);
+    color: white;
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+
+.product-subcategory {
+    background: linear-gradient(135deg, #8b5cf6, #ec4899);
+    color: white;
+    padding: 8px 12px;
+    border-radius: 15px;
+    font-size: 0.8rem;
+    font-weight: 600;
+}
+
+.product-description {
+    color: #cbd5e1;
+    font-size: 1.1rem;
+    line-height: 1.6;
+    margin-bottom: 2rem;
+}
+
+.product-details-grid {
+    background: #1f2937;
+    padding: 1.5rem;
+    border-radius: 10px;
+    margin-bottom: 2rem;
+}
+
+.detail-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.8rem 0;
+    border-bottom: 1px solid #374151;
+}
+
+.detail-item:last-child {
+    border-bottom: none;
+}
+
+.detail-item strong {
+    color: #cbd5e1;
+    font-weight: 600;
+}
+
+.detail-item span {
+    color: white;
+    font-weight: 500;
+}
+
+.product-price-section {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+    padding: 1rem 0;
+    border-top: 2px solid #374151;
+    border-bottom: 2px solid #374151;
+}
+
+.product-price {
+    font-size: 2.5rem;
+    font-weight: 800;
+    color: #10b981;
+}
+
+.product-stock {
+    font-size: 1.1rem;
+    font-weight: 600;
+}
+
+.product-stock.low-stock {
+    color: #f59e0b;
+}
+
+.product-stock.out-of-stock {
+    color: #ef4444;
+}
+
+.add-to-cart-form {
+    text-align: center;
+}
+
+.add-to-cart-btn-detail {
+    background: linear-gradient(135deg, #0ea5e9, #10b981);
+    color: white;
+    border: none;
+    padding: 15px 40px;
+    border-radius: 25px;
+    font-weight: 600;
+    cursor: pointer;
+    font-size: 1.2rem;
+    transition: all 0.3s ease;
+    width: 100%;
+}
+
+.add-to-cart-btn-detail:hover:not(:disabled) {
+    transform: scale(1.05);
+    box-shadow: 0 5px 20px rgba(14, 165, 233, 0.4);
+}
+
+.add-to-cart-btn-detail:disabled {
+    background: #6b7280;
+    cursor: not-allowed;
+}
+
+@media (max-width: 768px) {
+    .product-detail-container {
+        padding: 1rem;
+    }
+
+    .product-detail-content {
+        grid-template-columns: 1fr;
+        gap: 2rem;
+    }
+
+    .product-detail-title {
+        font-size: 2rem;
+    }
+
+    .product-price {
+        font-size: 2rem;
+    }
+}
+</style>
+{% endblock %}

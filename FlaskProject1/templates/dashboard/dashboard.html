@@ -3,6 +3,7 @@
 {% block title %}Твоят Dashboard{% endblock %}
 
 {% block content %}
+<div class="dashboard-container">
     <div class="dashboard-header">
         <h1 class="welcome-title">Добре дошъл, <span class="username">{{ current_user.username }}</span>!</h1>
         <p class="welcome-subtitle">Тук можеш да разглеждаш каталога с продукти и да управляваш своите данни.</p>
@@ -84,25 +85,31 @@
     <h2 class="catalog-title">Каталог с Обувки ({{ products_dict|length }} продукта)</h2>
 
     <div class="products-grid">
-{% for product_id, product in products_dict.items() %}
-<div class="product-card">
-    <div class="product-image">
-    {% set base_key = product_id.rsplit('_', 1)[0] %}
-    <img src="{{ url_for('static', filename='images/' + product_images.get(base_key, 'default.png')) }}"
-         alt="{{ product.name }}"
-         style="width: 100%; height: 100%; object-fit: cover;"
-         onerror="this.onerror=null; this.src='{{ url_for('static', filename='images/default.png') }}'">
-    <div class="product-overlay">
-        <form action="{{ url_for('cart.add_to_cart') }}" method="POST">
-            <input type="hidden" name="product_id" value="{{ product_id }}">
-            <button type="submit" class="add-to-cart-btn"
-                    {% if product.in_stock == 0 %}disabled{% endif %}>
-                <span>{% if product.in_stock == 0 %}Изчерпан{% else %}Добави в количката{% endif %}</span>
-                <i class="cart-icon">🛒</i>
-            </button>
-        </form>
-    </div>
-</div>
+        {% for product_id, product in products_dict.items() %}
+        <div class="product-card">
+            <div class="product-image">
+                {% set base_key = product_id.rsplit('_', 1)[0] %}
+                <img src="{{ url_for('static', filename='images/' + product_images.get(base_key, 'default.png')) }}"
+                     alt="{{ product.name }}"
+                     style="width: 100%; height: 100%; object-fit: cover;"
+                     onerror="this.onerror=null; this.src='{{ url_for('static', filename='images/default.png') }}'">
+                <div class="product-overlay">
+                    <div class="product-actions">
+                        <form action="{{ url_for('dashboard.add_to_cart') }}" method="POST">
+                            <input type="hidden" name="product_id" value="{{ product_id }}">
+                            <button type="submit" class="add-to-cart-btn"
+                                    {% if product.in_stock == 0 %}disabled{% endif %}>
+                                <span>{% if product.in_stock == 0 %}Изчерпан{% else %}Добави в количката{% endif %}</span>
+                                <i class="cart-icon">🛒</i>
+                            </button>
+                        </form>
+                        <a href="{{ url_for('dashboard.see_product', product_id=product_id) }}"
+                           class="see-reviews-btn">
+                            <span>Разгледай ревютата 🌟</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
             <div class="product-info">
                 <h3 class="product-name">{{ product.brand }} {{ product.name }}</h3>
                 <div class="product-meta">
@@ -129,7 +136,7 @@
     </div>
 
     <div class="cart-section">
-        <a href="{{ url_for('cart.cart_page') }}" class="view-cart-btn">
+        <a href="{{ url_for('dashboard.cart_page') }}" class="view-cart-btn">
             <span>Преглед на количката ({{ session.get('cart', [])|length }})</span>
             <i class="cart-icon-large">🛒</i>
         </a>
@@ -348,6 +355,44 @@ body {
     opacity: 1;
 }
 
+.product-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    align-items: center;
+    width: 100%;
+    padding: 0 20px;
+}
+
+.see-reviews-btn {
+    background: linear-gradient(135deg, #e9d70e, #b98910);
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 25px;
+    font-weight: 700;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.3s ease;
+    font-family: inherit;
+    text-decoration: none;
+    text-align: center;
+    justify-content: center;
+    width: 100%;
+}
+
+.see-reviews-btn:hover:not(:disabled) {
+    transform: scale(1.05);
+    box-shadow: 0 5px 15px rgba(193, 233, 14, 0.4);
+}
+
+.see-reviews-btn:disabled {
+    background: #7f806b;
+    cursor: not-allowed;
+}
+
 .add-to-cart-btn {
     background: linear-gradient(135deg, #0ea5e9, #10b981);
     color: white;
@@ -361,6 +406,8 @@ body {
     gap: 8px;
     transition: all 0.3s ease;
     font-family: inherit;
+    width: 100%;
+    justify-content: center;
 }
 
 .add-to-cart-btn:hover:not(:disabled) {
@@ -537,7 +584,6 @@ body {
 </style>
 
 <script>
-
 document.addEventListener('DOMContentLoaded', function() {
     const filters = document.querySelectorAll('select, input[type="number"]');
     filters.forEach(filter => {

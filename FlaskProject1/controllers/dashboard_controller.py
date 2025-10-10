@@ -291,3 +291,27 @@ def delete_product(product_id):
         flash(f'Грешка при изтриване на продукт: {str(e)}', 'error')
 
     return redirect(url_for('dashboard.admin'))
+
+
+@dashboard_bp.route('/see_product/<product_id>')
+@login_required
+def see_product(product_id):
+    try:
+        product_db_id = int(product_id.split('_')[-1])
+        product = Shoe.query.get(product_db_id)
+
+        if not product:
+            flash('Продуктът не е намерен.', 'error')
+            return redirect(url_for('dashboard.dashboard'))
+        base_key = product_id.rsplit('_', 1)[0]
+        product_image = PRODUCT_IMAGES.get(base_key, 'default.png')
+
+        return render_template('dashboard/product.html',
+                               product=product,
+                               product_id=product_id,
+                               product_image=product_image,
+                               current_user=current_user)
+
+    except (ValueError, IndexError) as e:
+        flash('Невалиден продукт.', 'error')
+        return redirect(url_for('dashboard.dashboard'))

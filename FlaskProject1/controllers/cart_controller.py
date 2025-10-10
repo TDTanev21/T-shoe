@@ -231,8 +231,6 @@ def convert_to_pdf():
         c.drawString(50, height - 100, f"Total orders count: {total_orders}")
         c.drawString(50, height - 120, f"Total products count: {total_items}")
         c.drawString(50, height - 140, f"Total price: {total_amount:.2f} lv")
-
-        # Footer
         c.setFont("Helvetica-Oblique", 8)
         c.drawString(50, 30, f"Generetaed by the T-Shoe system on {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
 
