@@ -33,41 +33,7 @@ PRODUCT_IMAGES = {
     'clarks_desert_boot': 'clarks_desert_boot.jpg'
 }
 
-@dashboard_bp.route('/checkout', methods=['POST'])
-@login_required
-def checkout():
-    cart_items = session.get('cart', [])
-    if cart_items:
-        total = 0
-        order = Order(user_id=current_user.id, total=0, status='обработва се')
-        db.session.add(order)
-        db.session.flush()
 
-        for product_id in cart_items:
-            try:
-                product_db_id = int(product_id.split('_')[-1])
-                product = Shoe.query.get(product_db_id)
-                if product and product.in_stock > 0:
-                    order_item = OrderItem(
-                        order_id=order.id,
-                        product_id=product.id,
-                        quantity=1,
-                        price=product.price
-                    )
-                    total += product.price
-                    product.in_stock -= 1
-                    db.session.add(order_item)
-            except (ValueError, IndexError):
-                continue
-
-        order.total = total
-        db.session.commit()
-        flash(f'Поръчка #{order.id} е успешно направена!', 'success')
-    else:
-        flash('Количката ви е празна!', 'warning')
-
-    session['cart'] = []
-    return redirect(url_for('dashboard.cart_page'))
 
 
 @dashboard_bp.route('/dashboard')
@@ -243,21 +209,6 @@ def add_product():
         flash(f'Грешка при добавяне на продукт: {str(e)}', 'error')
 
     return redirect(url_for('dashboard.admin'))
-
-
-@dashboard_bp.route('/remove_from_cart', methods=['POST'])
-@login_required
-def remove_from_cart():
-    product_id = request.form.get('product_id')
-
-    if 'cart' in session and product_id in session['cart']:
-        session['cart'].remove(product_id)
-        session.modified = True
-        flash('Продуктът е премахнат от количката!', 'success')
-
-    return redirect(url_for('dashboard.cart_page'))
-
-
 @dashboard_bp.route('/admin/delete_user/<int:user_id>')
 @login_required
 def delete_user(user_id):

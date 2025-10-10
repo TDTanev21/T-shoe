@@ -69,7 +69,7 @@
                                 </div>
                             </div>
                             <div class="item-actions">
-                                <form action="{{ url_for('dashboard.remove_from_cart') }}" method="POST" style="display: inline;">
+                                <form action="{{ url_for('cart.remove_from_cart') }}" method="POST" style="display: inline;">
                                     <input type="hidden" name="product_id" value="{{ product_id }}">
                                     <button type="submit" class="btn-remove">Премахни</button>
                                 </form>
@@ -111,7 +111,7 @@
                 <span class="summary-value total-price">{{ "%.2f"|format(total_price.value + 5) }} лв</span>
             </div>
 
-        <form action="{{ url_for('dashboard.checkout') }}" method="POST">
+        <form action="{{ url_for('cart.checkout') }}" method="POST">
             <button type="submit" class="checkout-btn" >
                 Продължи към плащане
             </button>
@@ -120,6 +120,13 @@
         </div>
         {% endif %}
     </div>
+<div class="pdf-section">
+    <form action="{{ url_for('cart.convert_to_pdf') }}" method="POST" style="margin-top: 10px;">
+        <button type="submit" class="pdf-btn">
+            📋 Генерирай PDF за всички поръчки
+        </button>
+    </form>
+</div>
 </div>
 
 <style>
@@ -435,6 +442,27 @@
             font-size: 2rem;
         }
     }
+    .pdf-section {
+    margin-top: 2rem;
+    text-align: center;
+}
+
+.pdf-btn {
+    background: linear-gradient(135deg, #dc2626, #ef4444);
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 1rem;
+}
+
+.pdf-btn:hover {
+    transform: scale(1.05);
+    box-shadow: 0 5px 15px rgba(220, 38, 38, 0.4);
+}
 </style>
 
 <script>

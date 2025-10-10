@@ -3,22 +3,6 @@
 {% block title %}Твоят Dashboard{% endblock %}
 
 {% block content %}
-<div class="dashboard-container">
-    {% if unread_notifications and unread_notifications|length > 0 %}
-    <div class="notification-banner">
-        <div class="alert alert-info d-flex justify-content-between align-items-center">
-            <div>
-                <strong>🆕 Имате {{ unread_notifications|length }} нови нотификации!</strong>
-                - Проверете новодобавените продукти.
-            </div>
-            <a href="{{ url_for('dashboard.mark_all_notifications_read') }}"
-               class="btn btn-sm btn-outline-info">
-                Маркирай всички като прочетени
-            </a>
-        </div>
-    </div>
-    {% endif %}
-
     <div class="dashboard-header">
         <h1 class="welcome-title">Добре дошъл, <span class="username">{{ current_user.username }}</span>!</h1>
         <p class="welcome-subtitle">Тук можеш да разглеждаш каталога с продукти и да управляваш своите данни.</p>
@@ -109,7 +93,7 @@
          style="width: 100%; height: 100%; object-fit: cover;"
          onerror="this.onerror=null; this.src='{{ url_for('static', filename='images/default.png') }}'">
     <div class="product-overlay">
-        <form action="{{ url_for('dashboard.add_to_cart') }}" method="POST">
+        <form action="{{ url_for('cart.add_to_cart') }}" method="POST">
             <input type="hidden" name="product_id" value="{{ product_id }}">
             <button type="submit" class="add-to-cart-btn"
                     {% if product.in_stock == 0 %}disabled{% endif %}>
@@ -145,7 +129,7 @@
     </div>
 
     <div class="cart-section">
-        <a href="{{ url_for('dashboard.cart_page') }}" class="view-cart-btn">
+        <a href="{{ url_for('cart.cart_page') }}" class="view-cart-btn">
             <span>Преглед на количката ({{ session.get('cart', [])|length }})</span>
             <i class="cart-icon-large">🛒</i>
         </a>
