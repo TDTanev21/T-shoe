@@ -80,16 +80,19 @@
 
         <div class="ms-auto d-flex align-items-center">
             {% if current_user.is_authenticated %}
-            <div class="dropdown">
-                <a class="d-flex align-items-center text-decoration-none dropdown-toggle" href="#"
-                   id="profileMenu" data-bs-toggle="dropdown" aria-expanded="false">
-                    <span class="ms-2">{{ current_user.username }}</span>
-                </a>
+<a class="nav-link dropdown-toggle d-flex align-items-center" href="#" role="button" data-bs-toggle="dropdown">
+    <img src="{{ url_for('static', filename='images/' ~ current_user.username ~ '_pfp.png') }}"
+         onerror="this.src='{{ url_for('static', filename='images/account.png') }}'"
+         alt="Profile Picture"
+         class="rounded-circle me-2"
+         style="width: 30px; height: 30px; object-fit: cover;">
+    {{ current_user.username }}
+</a>
                  {% if current_user.is_admin %}
                          <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="profileMenu">
 
                     <li><a class="dropdown-item" href="{{ url_for('dashboard.admin') }}">Дашборд 👤</a></li>
-                    <li><a class="dropdown-item" href="">Настройки ⚙</a></li>
+                    <li><a class="dropdown-item" href="{{ url_for('profile.settings') }}">Настройки ⚙</a></li>
                     <li><hr class="dropdown-divider"></li>
                     <li><a class="dropdown-item" href="{{ url_for('auth.logout') }}">Излез</a></li>
                 </ul>
@@ -97,7 +100,7 @@
                 <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="profileMenu">
 
                     <li><a class="dropdown-item" href="{{ url_for('dashboard.cart_page') }}">Количка 🛒</a></li>
-                    <li><a class="dropdown-item" href="">Настройки ⚙</a></li>
+                    <li><a class="dropdown-item" href="{{ url_for('profile.settings') }}">Настройки ⚙</a></li>
                     <li><hr class="dropdown-divider"></li>
                     <li><a class="dropdown-item" href="{{ url_for('auth.logout') }}">Излез</a></li>
                 </ul>

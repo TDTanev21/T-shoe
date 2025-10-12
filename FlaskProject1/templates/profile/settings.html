@@ -1,0 +1,345 @@
+{% extends 'base.html' %}
+
+{% block title %}Настройки{% endblock %}
+
+{% block content %}
+<div class="settings-container">
+    <div class="first-column">
+        <h1 class="settings-title">Настройки</h1>
+
+        <div class="settings-form">
+            <h3 class="form-title">Профилна снимка</h3>
+            <div class="profile-picture-container">
+                <img src="{{ url_for('static', filename='images/' ~ current_user.username ~ '_pfp.png') }}"
+                     onerror="this.src='{{ url_for('static', filename='images/account.png') }}'"
+                     alt="Profile Picture" class="profile-picture">
+            </div>
+            <form method="POST" action="{{ url_for('profile.upload_picture') }}" enctype="multipart/form-data">
+                <input type="file" name="profile_picture" id="profile_picture" accept="image/*" required style="display: none;">
+                <label for="profile_picture" class="file-upload-label">Избери нова снимка</label>
+                <button type="submit" class="upload-btn">Качи снимка</button>
+            </form>
+        </div>
+    </div>
+
+    <div class="second-column">
+        <div class="settings-form">
+            <h3 class="form-title">Промяна на потребителско име</h3>
+            <form method="POST" action="{{ url_for('profile.update_username') }}">
+                <input type="text" name="username" placeholder="Ново потребителско име" required class="form-input">
+                <button type="submit" class="submit-btn">Обнови</button>
+            </form>
+        </div>
+
+        <div class="settings-form">
+            <h3 class="form-title">Промяна на парола</h3>
+            <form method="POST" action="{{ url_for('profile.change_password') }}">
+                <input type="password" name="current_password" placeholder="Настояща парола" required class="form-input">
+                <input type="password" name="new_password" placeholder="Нова парола" required class="form-input">
+                <button type="submit" class="submit-btn">Смени парола</button>
+            </form>
+        </div>
+
+        <div class="delete-section">
+            <form method="POST" action="{{ url_for('profile.delete_account') }}">
+                <button type="submit" class="delete-button" onclick="return confirm('Сигурни ли сте? Това действие е необратимо!')">
+                    🗑️ Изтрий акаунт
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<style>
+ body {
+    font-family: 'Inter', sans-serif;
+    min-height: 100vh;
+    background: linear-gradient(135deg, #0a0a0f, #1f1f29, #0d0d13);
+    overflow-x: hidden;
+    color: white;
+}
+.settings-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem;
+    background: #000000;
+    min-height: 100vh;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 3rem;
+    align-items: start;
+}
+
+.settings-title {
+    font-size: 3rem;
+    font-weight: 800;
+    color: #ffffff;
+    margin-bottom: 2rem;
+    background: linear-gradient(135deg, #0ea5e9 0%, #10b981 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    text-align: center;
+}
+
+.first-column, .second-column {
+    background: #111827;
+    border-radius: 15px;
+    padding: 2rem;
+    border: 1px solid #1f2937;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+}
+
+.settings-form {
+    margin-bottom: 2.5rem;
+    padding-bottom: 2rem;
+    border-bottom: 1px solid #374151;
+}
+
+.settings-form:last-of-type {
+    border-bottom: none;
+    margin-bottom: 0;
+    padding-bottom: 0;
+}
+
+.form-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #ffffff;
+    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.form-title::before {
+    content: '⚙️';
+    font-size: 1.2rem;
+}
+
+.profile-picture-container {
+    text-align: center;
+    margin-bottom: 1.5rem;
+}
+
+.profile-picture {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid #0ea5e9;
+    box-shadow: 0 4px 15px rgba(14, 165, 233, 0.3);
+    transition: all 0.3s ease;
+}
+
+.profile-picture:hover {
+    transform: scale(1.05);
+    box-shadow: 0 6px 20px rgba(14, 165, 233, 0.5);
+}
+
+.file-upload-label {
+    display: inline-block;
+    background: linear-gradient(135deg, #0ea5e9, #10b981);
+    color: white;
+    padding: 12px 24px;
+    border-radius: 25px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-bottom: 1rem;
+    text-align: center;
+    width: 100%;
+}
+
+.file-upload-label:hover {
+    transform: scale(1.05);
+    box-shadow: 0 5px 15px rgba(14, 165, 233, 0.4);
+}
+
+.form-input {
+    width: 100%;
+    padding: 12px 16px;
+    border: 1px solid #374151;
+    border-radius: 8px;
+    background: #1f2937;
+    color: white;
+    font-size: 1rem;
+    margin-bottom: 1rem;
+    transition: all 0.3s ease;
+}
+
+.form-input:focus {
+    outline: none;
+    border-color: #0ea5e9;
+    box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.1);
+}
+
+.form-input::placeholder {
+    color: #9ca3af;
+}
+
+.upload-btn, .submit-btn {
+    width: 100%;
+    background: linear-gradient(135deg, #0ea5e9, #10b981);
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 1rem;
+}
+
+.upload-btn:hover, .submit-btn:hover {
+    transform: scale(1.02);
+    box-shadow: 0 5px 15px rgba(14, 165, 233, 0.4);
+}
+
+.delete-section {
+    margin-top: 2rem;
+    padding-top: 2rem;
+    border-top: 2px solid #374151;
+}
+
+.delete-button {
+    width: 100%;
+    background: linear-gradient(135deg, #ef4444, #dc2626);
+    color: white;
+    border: none;
+    padding: 15px 24px;
+    border-radius: 8px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 1.1rem;
+}
+
+.delete-button:hover {
+    transform: scale(1.02);
+    box-shadow: 0 5px 15px rgba(239, 68, 68, 0.4);
+    background: linear-gradient(135deg, #dc2626, #b91c1c);
+}
+
+@media (max-width: 768px) {
+    .settings-container {
+        grid-template-columns: 1fr;
+        gap: 2rem;
+        padding: 1rem;
+    }
+
+    .settings-title {
+        font-size: 2.5rem;
+    }
+
+    .first-column, .second-column {
+        padding: 1.5rem;
+    }
+
+    .profile-picture {
+        width: 120px;
+        height: 120px;
+    }
+
+    .form-title {
+        font-size: 1.3rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .settings-container {
+        padding: 0.5rem;
+    }
+
+    .settings-title {
+        font-size: 2rem;
+    }
+
+    .first-column, .second-column {
+        padding: 1rem;
+    }
+
+    .profile-picture {
+        width: 100px;
+        height: 100px;
+    }
+}
+
+.settings-form {
+    animation: slideUp 0.5s ease;
+}
+
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.flash-messages {
+    margin-bottom: 2rem;
+}
+
+.flash-message {
+    background: #111827;
+    border: 1px solid #1f2937;
+    border-radius: 10px;
+    padding: 1rem;
+    margin-bottom: 1rem;
+    animation: slideInDown 0.3s ease;
+}
+
+.flash-message.success {
+    border-left: 4px solid #10b981;
+    color: #10b981;
+}
+
+.flash-message.error {
+    border-left: 4px solid #ef4444;
+    color: #ef4444;
+}
+
+.flash-message.warning {
+    border-left: 4px solid #f59e0b;
+    color: #f59e0b;
+}
+
+@keyframes slideInDown {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+</style>
+
+<script>
+setTimeout(function() {
+    const flashMessages = document.querySelectorAll('.flash-message');
+    flashMessages.forEach(function(message) {
+        message.style.animation = 'slideInDown 0.3s ease reverse';
+        setTimeout(function() {
+            message.remove();
+        }, 300);
+    });
+}, 5000);
+
+document.getElementById('profile_picture').addEventListener('change', function(e) {
+    const file = e.target.files[0];
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            document.querySelector('.profile-picture').src = e.target.result;
+        }
+        reader.readAsDataURL(file);
+    }
+});
+</script>
+{% endblock %}

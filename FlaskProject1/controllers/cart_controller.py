@@ -15,6 +15,22 @@ from reportlab.lib.units import inch, cm
 from services.product_service import add_new_product
 
 cart_bp = Blueprint('cart', __name__)
+PRODUCT_IMAGES = {
+    'nike_air_force_1': 'air_force_1.jpg',
+    'adidas_ultraboost': 'adidas_ultraboost_1.jpg',
+    'puma_rs-x': 'puma_rs_x.jpg',
+    'adidas_predator': 'adidas_predator.jpg',
+    'nike_air_max': 'air_max.jpg',
+    'clarks_oxford': 'clarks_oxford.jpg',
+    'hugo_boss_boss_classic': 'hugo_boss_boss_classic.jpg',
+    'geox_derby': 'geox_derby.jpg',
+    'salvatore_monk_strap': 'salvatore_monk_strap.jpg',
+    'adidas_superstar': 'adidas_superstar.jpg',
+    'new_balance_574': 'new_balance_574.jpg',
+    'vans_old_skool': 'vans_old_skool.jpg',
+    'converse_chuck_70': 'converse_chuck_70.jpg',
+    'clarks_desert_boot': 'clarks_desert_boot.jpg'
+}
 
 @cart_bp.route('/checkout', methods=['POST'])
 @login_required
@@ -85,7 +101,8 @@ def cart_page():
         "dashboard/cart.html",
         current_user=current_user,
         cart_items=valid_cart_items,
-        products_dict=products_dict
+        products_dict=products_dict,
+        product_images = PRODUCT_IMAGES
     )
 
 @cart_bp.route('/add', methods=['POST'])

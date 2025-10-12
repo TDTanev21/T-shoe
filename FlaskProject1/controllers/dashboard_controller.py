@@ -7,15 +7,6 @@ from models import db
 from services.product_service import get_filtered_products, add_new_product
 
 dashboard_bp = Blueprint('dashboard', __name__)
-
-CATEGORIES = {
-    "Спортни": ["Бягане", "Баскетбол", "Футбол", "Тенис", "Тренировка", "Волейбол"],
-    "Елегантни": ["Оксфорди", "Дърбита", "Лофери", "Монкстрапове", "Брогове"],
-    "Всекидневни": ["Кецове", "Мокасини", "Ботуши", "Сандали", "Еспадрили"]
-}
-
-BRANDS = ["Nike", "Adidas", "Puma", "New Balance", "Vans", "Converse", "Clarks", "Hugo Boss", "Geox", "Salvatore"]
-
 PRODUCT_IMAGES = {
     'nike_air_force_1': 'air_force_1.jpg',
     'adidas_ultraboost': 'adidas_ultraboost_1.jpg',
@@ -33,8 +24,13 @@ PRODUCT_IMAGES = {
     'clarks_desert_boot': 'clarks_desert_boot.jpg'
 }
 
+CATEGORIES = {
+    "Спортни": ["Бягане", "Баскетбол", "Футбол", "Тенис", "Тренировка", "Волейбол"],
+    "Елегантни": ["Оксфорди", "Дърбита", "Лофери", "Монкстрапове", "Брогове"],
+    "Всекидневни": ["Кецове", "Мокасини", "Ботуши", "Сандали", "Еспадрили"]
+}
 
-
+BRANDS = ["Nike", "Adidas", "Puma", "New Balance", "Vans", "Converse", "Clarks", "Hugo Boss", "Geox", "Salvatore"]
 
 @dashboard_bp.route('/dashboard')
 @login_required
