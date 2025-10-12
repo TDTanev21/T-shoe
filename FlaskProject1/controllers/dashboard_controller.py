@@ -5,7 +5,7 @@ from models.user import User
 from models.order import Order, OrderItem
 from models import db
 from services.product_service import get_filtered_products, add_new_product
-
+from models.review import Review
 dashboard_bp = Blueprint('dashboard', __name__)
 PRODUCT_IMAGES = {
     'nike_air_force_1': 'air_force_1.jpg',
@@ -293,20 +293,39 @@ def delete_product(product_id):
 @login_required
 def see_product(product_id):
     try:
+        # Вземане на продукта от базата данни
         product_db_id = int(product_id.split('_')[-1])
         product = Shoe.query.get(product_db_id)
 
         if not product:
             flash('Продуктът не е намерен.', 'error')
             return redirect(url_for('dashboard.dashboard'))
+
+        # Генериране на product_id за снимката
         base_key = product_id.rsplit('_', 1)[0]
         product_image = PRODUCT_IMAGES.get(base_key, 'default.png')
+        reviews = Review.query.filter_by(product_id=product_db_id).all()
+
+        average_rating = 0
+        if reviews:
+            average_rating = sum(review.rating for review in reviews) / len(reviews)
+
+        user_review = None
+        if current_user.is_authenticated:
+            user_review = Review.query.filter_by(
+                product_id=product_db_id,
+                user_id=current_user.id
+            ).first()
 
         return render_template('dashboard/product.html',
                                product=product,
                                product_id=product_id,
                                product_image=product_image,
-                               current_user=current_user)
+                               current_user=current_user,
+                               reviews=reviews,
+                               average_rating=round(average_rating, 1),
+                               total_reviews=len(reviews),
+                               user_review=user_review)
 
     except (ValueError, IndexError) as e:
         flash('Невалиден продукт.', 'error')

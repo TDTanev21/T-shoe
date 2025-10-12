@@ -16,12 +16,14 @@ from controllers.auth_controller import auth_bp
 from controllers.dashboard_controller import dashboard_bp
 from controllers.cart_controller import cart_bp
 from controllers.profile_controller import profile_bp
+from controllers.review_controller import review_bp
 app.register_blueprint(main_bp)
 app.register_blueprint(auth_bp, url_prefix='/auth')
 app.register_blueprint(dashboard_bp, url_prefix='/dashboard')
 app.register_blueprint(cart_bp, url_prefix='/cart')
 
 app.register_blueprint(profile_bp, url_prefix='/profile')
+app.register_blueprint(review_bp, url_prefix='/review')
 @app.context_processor
 def inject_current_user():
     from flask_login import current_user
