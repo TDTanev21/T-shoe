@@ -6,15 +6,20 @@ from . import db
 class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(80), unique=True, nullable=False)
-    password_hash = db.Column(db.String(120), nullable=False)
+    _password_hash = db.Column("password_hash", db.String(120), nullable=False)
     is_admin = db.Column(db.Boolean, default=False)
     orders = db.relationship('Order', backref='user', lazy=True)
 
-    def set_password(self, password):
-        self.password_hash = generate_password_hash(password)
+    @property
+    def password(self):
+        raise AttributeError("Паролата не може да бъде прочетена директно.")
+
+    @password.setter
+    def password(self, password):
+        self._password_hash = generate_password_hash(password)
 
     def check_password(self, password):
-        return check_password_hash(self.password_hash, password)
+        return check_password_hash(self._password_hash, password)
 
     def get_id(self):
         return str(self.id)

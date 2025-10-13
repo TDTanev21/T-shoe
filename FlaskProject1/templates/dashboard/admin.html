@@ -207,6 +207,42 @@
         {% endif %}
     </div>
 </div>
+    <div class="management-section">
+    <h2 class="section-title">Снимки за одобрение ({{ pending_pictures|length }})</h2>
+    {% if pending_pictures %}
+    <div class="table-container">
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>Потребител</th>
+                    <th>Снимка</th>
+                    <th>Дата</th>
+                    <th>Действия</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for pic in pending_pictures %}
+                <tr>
+                    <td>{{ pic.user.username }}</td>
+                    <td><img src="{{ url_for('static', filename='pending_pictures/' ~ pic.filename) }}" width="80"></td>
+                    <td>{{ pic.uploaded_at.strftime('%Y-%m-%d %H:%M') }}</td>
+                    <td>
+                        <form action="{{ url_for('dashboard.approve_picture', picture_id=pic.id) }}" method="POST" style="display:inline;">
+                            <button type="submit" class="btn-approve">Одобри</button>
+                        </form>
+                        <form action="{{ url_for('dashboard.reject_picture', picture_id=pic.id) }}" method="POST" style="display:inline;">
+                            <button type="submit" class="btn-delete">Отхвърли</button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <p class="no-data">Няма чакащи снимки.</p>
+    {% endif %}
+</div>
 
 <style>
  body {
