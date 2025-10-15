@@ -10,12 +10,7 @@ class User(UserMixin, db.Model):
     is_admin = db.Column(db.Boolean, default=False)
     orders = db.relationship('Order', backref='user', lazy=True)
 
-    @property
-    def password(self):
-        raise AttributeError("Паролата не може да бъде прочетена директно.")
-
-    @password.setter
-    def password(self, password):
+    def set_password(self, password):
         self._password_hash = generate_password_hash(password)
 
     def check_password(self, password):

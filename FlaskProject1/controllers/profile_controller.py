@@ -7,31 +7,41 @@ from werkzeug.utils import secure_filename
 from flask import current_app
 
 profile_bp = Blueprint('profile', __name__)
+@profile_bp.route('/settings')
+@login_required
+def settings():
+    username = current_user.username
+    approved_path = os.path.join(current_app.root_path, 'static', 'images', f"{username}_pfp.png")
+    pending_path = os.path.join(current_app.root_path, 'static', 'pending_pictures', f"{username}_pending.png")
 
+    approved_exists = os.path.exists(approved_path)
+    pending_exists = os.path.exists(pending_path)
+
+    return render_template(
+        'profile/settings.html',
+        current_user=current_user,
+        approved_exists=approved_exists,
+        pending_exists=pending_exists
+    )
 @profile_bp.route('/upload_picture', methods=['POST'])
+@login_required
 def upload_picture():
-    if 'profile_picture' not in request.files:
-        flash('No file selected')
+    if 'profile_picture' not in request.files or request.files['profile_picture'].filename == '':
+        flash('Не е избран файл.')
         return redirect(url_for('profile.settings'))
 
     file = request.files['profile_picture']
-    if file.filename == '':
-        flash('No file selected')
-        return redirect(url_for('profile.settings'))
+    filename = secure_filename(f"{current_user.username}_pending.png")
 
-    if file:
-        filename = secure_filename(f"{current_user.username}_pfp.png")
-        save_path = os.path.join(current_app.root_path, 'static', 'images', filename)
+    pending_folder = os.path.join(current_app.root_path, 'static', 'pending_pictures')
+    os.makedirs(pending_folder, exist_ok=True)
 
-        file.save(save_path)
-        flash('Profile picture updated successfully!')
+    save_path = os.path.join(pending_folder, filename)
+    file.save(save_path)
 
+    flash('Снимката е качена и чака одобрение от администратор.')
     return redirect(url_for('profile.settings'))
 
-@profile_bp.route('/settings', methods=['GET'])
-@login_required
-def settings():
-    return render_template('profile/settings.html', current_user=current_user)
 
 @profile_bp.route('/update_username', methods=['POST'])
 @login_required

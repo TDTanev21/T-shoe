@@ -1,4 +1,6 @@
-from flask import Blueprint, render_template, session, redirect, url_for, flash, request
+import os
+
+from flask import Blueprint, render_template, session, redirect, url_for, flash, request, current_app
 from flask_login import login_required, current_user
 from models.product import Shoe
 from models.user import User
@@ -159,6 +161,9 @@ def admin():
     users = User.query.all()
     orders = Order.query.all()
     products = Shoe.query.all()
+    pending_dir = os.path.join(current_app.root_path, 'static', 'pending_pictures')
+    pending_files = [f for f in os.listdir(pending_dir) if f.endswith('.png')]
+
 
     return render_template(
         'dashboard/admin.html',
@@ -169,8 +174,46 @@ def admin():
         total_revenue=total_revenue,
         users=users,
         orders=orders,
-        products=products
+        products=products,
+        pending_files=pending_files
     )
+@dashboard_bp.route('/approve_picture/<username>', methods=['POST'])
+@login_required
+def approve_picture(username):
+    pending_folder = os.path.join(current_app.root_path, 'static', 'pending_pictures')
+    approved_folder = os.path.join(current_app.root_path, 'static', 'images')
+
+    pending_file = os.path.join(pending_folder, f"{username}_pending.png")
+    approved_file = os.path.join(approved_folder, f"{username}_pfp.png")
+    os.makedirs(approved_folder, exist_ok=True)
+
+    # Одобрение
+    if os.path.exists(pending_file):
+        if os.path.exists(approved_file):
+            os.remove(approved_file)
+
+        os.replace(pending_file, approved_file)
+        flash(f'✅ Снимката на {username} е одобрена.')
+    else:
+        flash('⚠️ Няма снимка за одобрение.')
+
+    return redirect(url_for('dashboard.admin'))
+
+
+
+@dashboard_bp.route('/reject_picture/<username>', methods=['POST'])
+@login_required
+def reject_picture(username):
+
+    pending_file = os.path.join(current_app.root_path, 'static', 'pending_pictures', f"{username}_pending.png")
+
+    if os.path.exists(pending_file):
+        os.remove(pending_file)
+        flash(f'❌ Снимката на {username} е отхвърлена.')
+    else:
+        flash('⚠️ Няма снимка за отхвърляне.')
+
+    return redirect(url_for('dashboard.admin'))
 
 
 @dashboard_bp.route('/admin/add_product', methods=['POST'])
@@ -293,7 +336,6 @@ def delete_product(product_id):
 @login_required
 def see_product(product_id):
     try:
-        # Вземане на продукта от базата данни
         product_db_id = int(product_id.split('_')[-1])
         product = Shoe.query.get(product_db_id)
 
@@ -301,7 +343,6 @@ def see_product(product_id):
             flash('Продуктът не е намерен.', 'error')
             return redirect(url_for('dashboard.dashboard'))
 
-        # Генериране на product_id за снимката
         base_key = product_id.rsplit('_', 1)[0]
         product_image = PRODUCT_IMAGES.get(base_key, 'default.png')
         reviews = Review.query.filter_by(product_id=product_db_id).all()

@@ -8,12 +8,19 @@
         <h1 class="settings-title">Настройки</h1>
 
         <div class="settings-form">
-            <h3 class="form-title">Профилна снимка</h3>
-            <div class="profile-picture-container">
-                <img src="{{ url_for('static', filename='images/' ~ current_user.username ~ '_pfp.png') }}"
-                     onerror="this.src='{{ url_for('static', filename='images/account.png') }}'"
-                     alt="Profile Picture" class="profile-picture">
-            </div>
+            <h3 class="form-title">Профилна снимка</h3><div class="profile-picture-container">
+    {% if approved_exists %}
+        <img src="{{ url_for('static', filename='images/' ~ current_user.username ~ '_pfp.png') }}"
+             alt="Profile Picture" class="profile-picture">
+    {% elif pending_exists %}
+        <div class="pending-message">⏳ Снимката чака одобрение от администратор.</div>
+    {% else %}
+        <img src="{{ url_for('static', filename='images/account.png') }}"
+             alt="Default Picture" class="profile-picture">
+    {% endif %}
+</div>
+
+
             <form method="POST" action="{{ url_for('profile.upload_picture') }}" enctype="multipart/form-data">
                 <input type="file" name="profile_picture" id="profile_picture" accept="image/*" required style="display: none;">
                 <label for="profile_picture" class="file-upload-label">Избери нова снимка</label>

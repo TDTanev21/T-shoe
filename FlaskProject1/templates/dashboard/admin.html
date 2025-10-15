@@ -209,39 +209,31 @@
 </div>
     <div class="management-section">
     <h2 class="section-title">Снимки за одобрение ({{ pending_pictures|length }})</h2>
-    {% if pending_pictures %}
-    <div class="table-container">
-        <table class="data-table">
-            <thead>
-                <tr>
-                    <th>Потребител</th>
-                    <th>Снимка</th>
-                    <th>Дата</th>
-                    <th>Действия</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for pic in pending_pictures %}
-                <tr>
-                    <td>{{ pic.user.username }}</td>
-                    <td><img src="{{ url_for('static', filename='pending_pictures/' ~ pic.filename) }}" width="80"></td>
-                    <td>{{ pic.uploaded_at.strftime('%Y-%m-%d %H:%M') }}</td>
-                    <td>
-                        <form action="{{ url_for('dashboard.approve_picture', picture_id=pic.id) }}" method="POST" style="display:inline;">
-                            <button type="submit" class="btn-approve">Одобри</button>
-                        </form>
-                        <form action="{{ url_for('dashboard.reject_picture', picture_id=pic.id) }}" method="POST" style="display:inline;">
-                            <button type="submit" class="btn-delete">Отхвърли</button>
-                        </form>
-                    </td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+{% if pending_files %}
+<h2>🖼 Снимки за одобрение</h2>
+<div class="pending-grid">
+    {% for file in pending_files %}
+    {% set username = file.replace('_pending.png', '') %}
+    <div class="pending-card">
+        <div class="pending-username">{{ username }}</div>
+        <img src="{{ url_for('static', filename='pending_pictures/' ~ file) }}"
+             alt="Pending Picture" class="pending-image">
+        <div class="pending-actions">
+            <form method="POST" action="{{ url_for('dashboard.approve_picture', username=username) }}">
+                <button class="btn-approve" type="submit">✅ Одобри</button>
+            </form>
+            <form method="POST" action="{{ url_for('dashboard.reject_picture', username=username) }}">
+                <button class="btn-reject" type="submit">❌ Отхвърли</button>
+            </form>
+        </div>
     </div>
-    {% else %}
-    <p class="no-data">Няма чакащи снимки.</p>
-    {% endif %}
+    {% endfor %}
+</div>
+{% else %}
+<p class="no-pending">Няма снимки за одобрение.</p>
+{% endif %}
+
+
 </div>
 
 <style>
@@ -463,6 +455,14 @@
     .table-container {
         overflow-x: auto;
     }
+}
+ .pending-image {
+    width: 100px;
+    height: 100px;
+    object-fit: cover;
+    border-radius: 6px;
+    box-shadow: 0 0 4px rgba(0,0,0,0.2);
+    margin-bottom: 10px;
 }
 </style>
 {% endblock %}
