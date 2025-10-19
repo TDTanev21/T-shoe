@@ -1,7 +1,6 @@
 from models.product import Shoe, SportShoe, FormalShoe, CasualShoe
 from models import db
 
-
 def get_filtered_products(search_term="", category_filter="", subcategory_filter="",
                           brand_filter="", min_price="", max_price=""):
     query = Shoe.query

@@ -325,6 +325,15 @@
         transform: translateY(0);
     }
 }
+.pending-message {
+    background: linear-gradient(135deg, #f59e0b, #d97706);
+    color: white;
+    padding: 1rem;
+    border-radius: 8px;
+    text-align: center;
+    margin-bottom: 1rem;
+    border: 1px solid #fbbf24;
+}
 </style>
 
 <script>
@@ -347,6 +356,7 @@ document.getElementById('profile_picture').addEventListener('change', function(e
         }
         reader.readAsDataURL(file);
     }
+
 });
 </script>
 {% endblock %}

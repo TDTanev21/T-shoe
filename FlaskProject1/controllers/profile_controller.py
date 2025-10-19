@@ -1,12 +1,14 @@
 from flask import Blueprint, render_template
 from flask import render_template, request, redirect, url_for, flash
 from flask_login import current_user, login_required, logout_user
-from models import User,db
+from models.user import User  # Промени този импорт
+from models import db
 import os
 from werkzeug.utils import secure_filename
 from flask import current_app
 
 profile_bp = Blueprint('profile', __name__)
+
 @profile_bp.route('/settings')
 @login_required
 def settings():
@@ -23,6 +25,7 @@ def settings():
         approved_exists=approved_exists,
         pending_exists=pending_exists
     )
+
 @profile_bp.route('/upload_picture', methods=['POST'])
 @login_required
 def upload_picture():
@@ -41,7 +44,6 @@ def upload_picture():
 
     flash('Снимката е качена и чака одобрение от администратор.')
     return redirect(url_for('profile.settings'))
-
 
 @profile_bp.route('/update_username', methods=['POST'])
 @login_required
@@ -62,7 +64,8 @@ def update_username():
         flash('Username updated successfully', 'success')
     except Exception as e:
         print(f"Username Update Error: {e}")
-        return redirect(url_for('errors.forbidden_error'))
+        flash('Грешка при обновяване на потребителското име', 'danger')
+        return redirect(url_for('profile.settings'))
 
     return redirect(url_for('profile.settings'))
 
@@ -76,16 +79,18 @@ def change_password():
             flash('Both fields are required', 'danger')
             return redirect(url_for('profile.settings'))
 
-        if not current_user.verify_password(current_pw):
+        # Използвай check_password, както е в User модела
+        if not current_user.check_password(current_pw):
             flash('Current password incorrect', 'danger')
             return redirect(url_for('profile.settings'))
 
-        current_user.password = new_pw
+        current_user.set_password(new_pw)
         db.session.commit()
         flash('Password updated successfully', 'success')
     except Exception as e:
         print(f"Password Change Error: {e}")
-        return redirect(url_for('errors.forbidden_error'))
+        flash('Грешка при промяна на паролата', 'danger')
+        return redirect(url_for('profile.settings'))
 
     return redirect(url_for('profile.settings'))
 
@@ -103,6 +108,7 @@ def delete_account():
             flash('User not found.', 'error')
     except Exception as e:
         print(f"Account Deletion Error: {e}")
-        return redirect(url_for('errors.forbidden_error'))
+        flash('Грешка при изтриване на акаунта', 'danger')
+        return redirect(url_for('profile.settings'))
 
     return redirect(url_for('auth.login'))

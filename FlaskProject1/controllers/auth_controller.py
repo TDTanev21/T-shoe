@@ -69,4 +69,4 @@ def logout():
     # Изход на потребителя
     success, message = logout_user_service()
     flash(message, 'info')
-    return redirect(url_for('main_bp.index'))
+    return redirect(url_for('main.index'))

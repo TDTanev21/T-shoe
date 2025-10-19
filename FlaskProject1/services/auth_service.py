@@ -3,7 +3,6 @@ from flask_login import login_user as flask_login_user, logout_user
 from models.user import User
 from models import db
 
-
 def register_user(username, password, confirm_password):
     """
     Регистрира нов потребител
@@ -32,7 +31,6 @@ def register_user(username, password, confirm_password):
         db.session.rollback()
         return False, f'Възникна грешка при регистрация: {str(e)}'
 
-
 def login_user_service(username, password):
     """
     Вход на потребител
@@ -46,7 +44,7 @@ def login_user_service(username, password):
         if user:
             print(f"✅ User found: {user.username}")
 
-            # Проверка на паролата
+            # Проверка на паролата - използвай check_password
             password_correct = user.check_password(password)
             print(f"🔑 Password check: {password_correct}")
 
@@ -75,7 +73,6 @@ def login_user_service(username, password):
     except Exception as e:
         print(f"💥 Login error: {e}")
         return False, f'Възникна грешка при вход: {str(e)}', url_for('auth.login')
-
 
 def logout_user_service():
     """
