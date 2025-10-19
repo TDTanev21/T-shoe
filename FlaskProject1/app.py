@@ -5,10 +5,6 @@ from models import db, login_manager
 app = Flask(__name__)
 app.config.from_object(Config)
 
-# ДОБАВИ ТЕЗИ РЕДОВЕ:
-app.config['DEBUG'] = True
-app.config['TESTING'] = True
-
 db.init_app(app)
 login_manager.init_app(app)
 login_manager.login_view = 'auth.login'
@@ -25,23 +21,17 @@ app.register_blueprint(main_bp)
 app.register_blueprint(auth_bp, url_prefix='/auth')
 app.register_blueprint(dashboard_bp, url_prefix='/dashboard')
 app.register_blueprint(cart_bp, url_prefix='/cart')
+
 app.register_blueprint(profile_bp, url_prefix='/profile')
 app.register_blueprint(review_bp, url_prefix='/review')
 @app.context_processor
 def inject_current_user():
     from flask_login import current_user
     return dict(current_user=current_user)
-with app.app_context():
-    try:
-        from models.user import User
-        from models.product import Shoe, SportShoe, FormalShoe, CasualShoe
-        from models.order import Order, OrderItem
-        from models.review import Review
 
-        db.create_all()
-        print("✅ Database tables created/verified")
-    except Exception as e:
-        print(f"❌ Database error: {e}")
+with app.app_context():
+    db.create_all()
+    print(" Database tables created/verified")
 
 if __name__ == '__main__':
-    app.run(debug=True, host='0.0.0.0', port=5000)
+    app.run(debug=True)
