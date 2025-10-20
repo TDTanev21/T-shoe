@@ -4,7 +4,7 @@
 
 {% block content %}
 <div class="min-h-screen flex flex-col items-center justify-center px-4 py-20 relative
-            bg-gradient-to-br from-gray-900 via-gray-950 to-gray-800 overflow-hidden">
+            bg-gradient-to-br from-gray-900 via-gray-950 to-gray-800">
 
     <div class="absolute inset-0 pointer-events-none">
         <div class="absolute w-96 h-96 bg-cyan-500 opacity-10 rounded-full top-10 left-10 animate-pulse-slow"></div>
@@ -28,142 +28,95 @@
         {% if current_user.is_authenticated %}
             {% if current_user.is_admin %}
             <a href="{{ url_for('dashboard.admin') }}"
-               class="cta-button inline-block bg-cyan-500 text-white px-10 py-4 rounded-full font-bold text-lg shadow-lg
-                      hover:bg-cyan-400 hover:scale-105 transition-all transform duration-300 animate-button">
+               class="cta-button animate-button">
                 Отиди към твоя Dashboard
             </a>
-                {% else %}
-                 <a href="{{ url_for('dashboard.dashboard') }}"
-               class="cta-button inline-block bg-cyan-500 text-white px-10 py-4 rounded-full font-bold text-lg shadow-lg
-                      hover:bg-cyan-400 hover:scale-105 transition-all transform duration-300 animate-button">
+            {% else %}
+            <a href="{{ url_for('dashboard.dashboard') }}"
+               class="cta-button animate-button">
                 Отиди към твоя Dashboard
             </a>
-                {% endif %}
-
+            {% endif %}
         {% else %}
             <a href="{{ url_for('auth.register') }}"
-               class="cta-button inline-block bg-cyan-500 text-white px-10 py-4 rounded-full font-bold text-lg shadow-lg
-                      hover:bg-cyan-400 hover:scale-105 transition-all transform duration-300 animate-button">
+               class="cta-button animate-button">
                 Започнете сега
             </a>
         {% endif %}
     </div>
 </div>
-    <div class="shoe-cards-container">
-        <div class="shoe-card">
-            <img src="{{ url_for('static', filename='images/shoes_home1.jpg') }}" alt="Футболни бутонки">
-            <div class="shoe-card-content">
-                <h3>Футболни</h3>
-                <p>За футболните фенове</p>
-            </div>
+
+<div class="shoe-cards-container">
+    <div class="shoe-card">
+        <img src="{{ url_for('static', filename='images/shoes_home1.jpg') }}" alt="Футболни бутонки">
+        <div class="shoe-card-content">
+            <h3>Футболни</h3>
+            <p>За футболните фенове</p>
         </div>
-        <div class="shoe-card">
-            <img src="{{ url_for('static', filename='images/shoes_home2.jpg') }}" alt="Всекидневни обувки">
-            <div class="shoe-card-content">
-                <h3>Всекидневни</h3>
-                <p>Комфорт</p>
-            </div>
+    </div>
+    <div class="shoe-card">
+        <img src="{{ url_for('static', filename='images/shoes_home2.jpg') }}" alt="Всекидневни обувки">
+        <div class="shoe-card-content">
+            <h3>Всекидневни</h3>
+            <p>Комфорт</p>
         </div>
-        <div class="shoe-card">
-            <img src="{{ url_for('static', filename='images/shoes_home3.jpg') }}" alt="Елегантни обувки">
-            <div class="shoe-card-content">
-                <h3>Елегантни</h3>
-                <p>Стил</p>
-            </div>
+    </div>
+    <div class="shoe-card">
+        <img src="{{ url_for('static', filename='images/shoes_home3.jpg') }}" alt="Елегантни обувки">
+        <div class="shoe-card-content">
+            <h3>Елегантни</h3>
+            <p>Стил</p>
         </div>
     </div>
 </div>
 
 <style>
-    body {
+body {
     font-family: 'Inter', sans-serif;
-    min-height: 100vh;
-    background: linear-gradient(135deg, #0a0a0f, #1f1f29, #0d0d13);
-    overflow-x: hidden;
-    color: white;
+    background-color: #F5F5F5;
+    color: #333;
+    margin: 0;
+    padding: 0;
 }
-
+/* Hero секция */
 .hero-title {
-    font-size: 4.5rem;
+    font-size: 4rem;
     font-weight: 900;
-    background: linear-gradient(135deg, #ffffff 0%, #cbd5e1 50%, #94a3b8 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    text-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+    color: #888888;
     line-height: 1.1;
-    margin-bottom: 1.5rem;
-    position: relative;
+    margin-bottom: 1rem;
 }
-
-.hero-title::after {
-    content: '';
-    position: absolute;
-    bottom: -10px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 100px;
-    height: 3px;
-    background: linear-gradient(90deg, #0ea5e9, #10b981, #8b5cf6);
-    border-radius: 2px;
-}
-
-.hero-subtitle {
-    font-size: 1.4rem;
-    font-weight: 300;
-    color: #cbd5e1;
-    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
-    letter-spacing: 0.5px;
-    line-height: 1.6;
-    max-width: 600px;
-    margin: 0 auto 3rem;
-    position: relative;
-}
-
 .hero-accent {
-    background: linear-gradient(135deg, #0ea5e9 0%, #10b981 50%, #8b5cf6 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    font-weight: 800;
+    color: #BDCFA8;
 }
-
-.section-title {
-    font-size: 3rem;
-    font-weight: 800;
-    text-align: center;
-    background: linear-gradient(135deg, #ffffff 0%, #e2e8f0 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    margin-bottom: 3rem;
-    position: relative;
+.hero-subtitle {
+    font-size: 1.2rem;
+    color: #D1D5DB;
+    max-width: 600px;
+    margin: 0 auto 2rem;
+}
+.cta-button {
+    background: linear-gradient(135deg, #BDCFA8, #A9BE8D);
+    color: white;
+    padding: 14px 36px;
+    border-radius: 50px;
+    font-weight: 700;
     text-transform: uppercase;
-    letter-spacing: 2px;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    display: inline-block;
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
 }
-
-.section-title::before {
-    content: '★';
-    position: absolute;
-    top: -10px;
-    left: 50%;
-    transform: translateX(-50%);
-    font-size: 1.5rem;
-    color: #0ea5e9;
+.cta-button:hover {
+    background: linear-gradient(135deg, #A9BE8D, #8F9580);
+    transform: translateY(-3px);
+    box-shadow: 0 12px 20px rgba(0, 0, 0, 0.3);
 }
-
-.section-title::after {
-    content: '';
-    position: absolute;
-    bottom: -15px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 150px;
-    height: 2px;
-    background: linear-gradient(90deg, transparent, #0ea5e9, #10b981, transparent);
+.cta-button:active {
+    transform: translateY(1px);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
 }
-
-/* Стилове за квадратчетата */
+/* Картички с обувки */
 .shoe-cards-container {
     display: flex;
     justify-content: center;
@@ -171,132 +124,57 @@
     gap: 25px;
     flex-wrap: nowrap;
     max-width: 950px;
-    margin: 0 auto;
-    padding: 40px 20px;
+    margin: 50px auto;
+    padding: 20px;
 }
-
 .shoe-card {
     width: 275px;
     height: 300px;
-    background: linear-gradient(145deg, #111827, #0f172a);
+    background: #fff;
     border-radius: 12px;
     overflow: hidden;
-    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.5);
-    transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-    display: flex;
-    flex-direction: column;
-    flex-shrink: 0;
-    position: relative;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    transition: all 0.3s ease;
 }
-
-.shoe-card::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 2px;
-    background: linear-gradient(90deg, #0ea5e9, #10b981, #8b5cf6);
-    opacity: 0;
-    transition: opacity 0.3s ease;
-}
-
-.shoe-card:hover::before {
-    opacity: 1;
-}
-
 .shoe-card:hover {
-    transform: scale(1.05) translateY(-5px);
-    box-shadow: 0 15px 35px rgba(34, 211, 238, 0.25);
-    background: linear-gradient(145deg, #1e293b, #1a2438);
+    transform: translateY(-8px);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.15);
 }
-
 .shoe-card img {
     width: 100%;
     height: 200px;
     object-fit: cover;
-    transition: transform 0.4s ease;
 }
-
-.shoe-card:hover img {
-    transform: scale(1.08);
-}
-
 .shoe-card-content {
-    padding: 15px 12px;
-    flex-grow: 1;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    background: linear-gradient(to bottom, rgba(17, 24, 39, 0.9), #111827);
+    padding: 15px;
+    text-align: center;
 }
-
 .shoe-card h3 {
-    font-size: 18px;
-    font-weight: bold;
-    color: white;
-    text-align: center;
-    margin: 0 0 8px 0;
-    line-height: 1.3;
+    font-size: 1.1rem;
+    color: #333;
+    margin-bottom: 5px;
 }
-
 .shoe-card p {
-    font-size: 14px;
-    color: #d1d5db;
+    font-size: 0.9rem;
+    color: #778899;
+}
+.section-title {
+    font-size: 2.5rem;
+    font-weight: 800;
+    color: #333;
     text-align: center;
-    margin: 0;
-    line-height: 1.4;
-}
-
-.shoe-card:nth-child(1):hover {
-    box-shadow: 0 15px 35px rgba(34, 211, 238, 0.3);
-}
-
-.shoe-card:nth-child(2):hover {
-    box-shadow: 0 15px 35px rgba(45, 212, 191, 0.3);
-}
-
-.shoe-card:nth-child(3):hover {
-    box-shadow: 0 15px 35px rgba(168, 85, 247, 0.3);
-}
-
-/* Анимации */
-@keyframes fadeInDown {
-    from { opacity: 0; transform: translateY(-20px); }
-    to { opacity: 1; transform: translateY(0); }
+    margin-bottom: 40px;
 }
 @keyframes fadeInUp {
     from { opacity: 0; transform: translateY(20px); }
     to { opacity: 1; transform: translateY(0); }
 }
-.animate-title { animation: fadeInDown 1s ease-out forwards; opacity: 0; animation-delay: 0.3s; }
-.animate-subtitle { animation: fadeInDown 1s ease-out forwards; opacity: 0; animation-delay: 0.6s; }
-.animate-button { animation: fadeInUp 1s ease-out forwards; opacity: 0; animation-delay: 0.9s; }
-
-@keyframes pulse-slow {
-    0%, 100% { transform: scale(1); opacity: 0.1; }
-    50% { transform: scale(1.1); opacity: 0.15; }
+.animate-title, .animate-subtitle, .animate-button {
+    animation: fadeInUp 1s ease forwards;
+    opacity: 0;
 }
-.animate-pulse-slow { animation: pulse-slow 8s ease-in-out infinite; }
-
-@keyframes glow {
-    0%, 100% { text-shadow: 0 0 10px rgba(14, 165, 233, 0.5); }
-    50% { text-shadow: 0 0 20px rgba(14, 165, 233, 0.8), 0 0 30px rgba(16, 185, 129, 0.6); }
-}
-
-.hero-title:hover {
-    animation: glow 2s ease-in-out infinite;
-}
-
-.cta-button {
-    font-size: 1.1rem;
-    font-weight: 700;
-    letter-spacing: 1px;
-    text-transform: uppercase;
-}
-
-a:hover {
-    transition: all 0.3s ease;
-}
+.animate-title { animation-delay: 0.2s; }
+.animate-subtitle { animation-delay: 0.4s; }
+.animate-button { animation-delay: 0.6s; }
 </style>
 {% endblock %}

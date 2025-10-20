@@ -18,25 +18,40 @@
         .navbar-brand img {
             height: auto;
         }
-        .notification-badge {
-            position: absolute;
-            top: -5px;
-            right: -5px;
-            background: #ef4444;
-            color: white;
-            border-radius: 50%;
-            width: 18px;
-            height: 18px;
-            font-size: 0.7rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
         body {
-            background: #000000 !important;
+            background-color: #F5F5F5; !important;
             margin: 0;
             padding: 0;
         }
+.btn-login {
+    max-width: 400px;
+    margin: 75px auto;
+    text-decoration: none;
+    color: white;
+    padding: 1rem 2rem;
+    background: linear-gradient(135deg, #BDCFA8, #A3B18A);
+    border-radius: 30px;
+    border: none;
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+    font-size: 1.2rem;
+    font-weight: bold;
+    text-align: center;
+    transition: all 0.3s ease;
+    display: inline-block;
+}
+
+.btn-login:hover {
+    background: linear-gradient(135deg, #A3B18A, #8F9580);
+    box-shadow: 0 12px 20px rgba(0, 0, 0, 0.3);
+    transform: translateY(-3px);
+}
+
+.btn-login:active {
+    transform: translateY(1px);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+
     </style>
 
     {% block extra_head %}{% endblock %}
@@ -44,7 +59,6 @@
 <body>
 <nav class="navbar navbar-expand-lg px-4 py-3">
     <div class="container-fluid">
-        <!-- ПРОМЕНИ ТУК: main_bp.index -> main.index -->
         <a class="navbar-brand d-flex align-items-center" href="{{ url_for('main.index') }}">
             <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Logo" width="250">
         </a>
@@ -72,7 +86,7 @@
                     </ul>
                 </div>
             {% else %}
-                <a class="btn btn-primary btn-lg" href="{{ url_for('auth.login') }}">Login</a>
+                <a class="btn-login" href="{{ url_for('auth.login') }}">Login</a>
             {% endif %}
         </div>
     </div>
